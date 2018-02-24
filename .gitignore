@@ -1,3 +1,4 @@
 *.o
 *.exe
-*.xcodeproj/
+tt.txt/
+raspberry-pi-fpv-visor.xcodeproj/
