@@ -2,3 +2,4 @@
 *.exe
 .DS_Store
 *.xcodeproj/
+bin/
