@@ -1,7 +1,7 @@
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Darwin)
-	CC := clang++ -std=c++14
+	CC := clang++
 else
 	CC := g++
 endif
@@ -21,9 +21,9 @@ OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -c
 
 ifeq ($(UNAME_S),Linux)
-	CFLAGS += -std=gnu++11 -O2 # -fPIC
+	CFLAGS += -std=gnu++14 -O2 # -fPIC
 else
-	CFLAGS += -std=c++11 -stdlib=libc++ -O2
+	CFLAGS += -std=c++14 -stdlib=libc++ -O2
 endif
 
 LIB := $(shell pkg-config gtkmm-3.0 opencv --libs)
