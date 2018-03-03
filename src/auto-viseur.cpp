@@ -61,8 +61,9 @@ Glib::RefPtr<Gdk::Pixbuf> AutoViseur::capture(int width, int height) {
     cv::Mat webcam, viseur;
     
     cap.read(webcam);
+	
     
-    resize(webcam, viseur, cv::Size(width, height), cv::INTER_AREA);
+    viseur = resizeWithinTargetSize(webcam, width, height);
 
     // Write over
     putText(viseur,
@@ -83,4 +84,19 @@ Glib::RefPtr<Gdk::Pixbuf> AutoViseur::capture(int width, int height) {
                                          viseur.rows,
                                          viseur.step);
 
+}
+
+cv::Mat AutoViseur::resizeWithinTargetSize(const cv::Mat &input, const int targetWidth, const int targetHeight) {
+	
+	float scaleX = ((float) targetWidth ) / input.cols;
+	float scaleY = ((float) targetHeight) / input.rows;
+	float scale = scaleX > scaleY ? scaleY : scaleX;
+
+	int width = input.cols * scale;
+	int height = input.rows * scale;
+
+	cv::Mat output;
+	resize(input, output, cv::Size(width, height));
+
+	return output;
 }

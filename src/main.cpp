@@ -8,15 +8,23 @@
 
 #include <iostream>
 #include <gtkmm.h>
-#include "hello-world.hpp"
 #include <gtkmm/application.h>
 
+#include "hello-world.hpp"
+#include "car-service.hpp"
 
 int main (int argc, char *argv[]) {
-    auto app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
-    
-    HelloWorld helloworld;
-    
-    //Shows the window and returns when it is closed.
-    return app->run(helloworld);
+
+	// Initializes services:
+	CarService carService;
+	Glib::signal_timeout().connect( sigc::mem_fun(&carService, &CarService::refreshStatus), 1000);
+
+	// Initializes the GUI:
+	auto app = Gtk::Application::create(argc, argv, "raspberry-pi-fpv-visor");
+	
+    HelloWorld helloWorld;
+	helloWorld.setCarService(carService);
+
+    // Launches the GUI:
+    return app->run(helloWorld);
 }

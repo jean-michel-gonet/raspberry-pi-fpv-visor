@@ -5,8 +5,7 @@
 HelloWorld::HelloWorld():
 m_button("Hello World"),
 autoViseur(),
-m_box(Gtk::ORIENTATION_VERTICAL)
-{
+m_box(Gtk::ORIENTATION_VERTICAL) {
     set_border_width(10);
     
     m_button.signal_clicked().connect(sigc::mem_fun(*this, &HelloWorld::on_button_clicked));
@@ -18,9 +17,6 @@ m_box(Gtk::ORIENTATION_VERTICAL)
 
     add(m_box);
     m_box.show();
-    
-    
-
 }
 
 HelloWorld::~HelloWorld() {
@@ -28,4 +24,8 @@ HelloWorld::~HelloWorld() {
 
 void HelloWorld::on_button_clicked() {
     std::cout << "Hello World" << std::endl;
+}
+
+void HelloWorld::setCarService(CarService &carService) {
+	this->carService = carService;
 }
