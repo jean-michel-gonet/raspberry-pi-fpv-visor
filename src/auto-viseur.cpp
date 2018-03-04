@@ -20,6 +20,7 @@
 #include <glibmm/fileutils.h>
 
 #include <iostream>
+#include <stdio.h>
 
 AutoViseur::AutoViseur() {
     set_size_request(INITIAL_WIDTH, INITIAL_HEIGHT);
@@ -92,6 +93,8 @@ cv::Mat AutoViseur::resizeWithinTargetSize(const cv::Mat &input, const int targe
 	float scaleY = ((float) targetHeight) / input.rows;
 	float scale = scaleX > scaleY ? scaleY : scaleX;
 
+	printf("Mat:[ %d x %d ] - Target:[ %d x %d ] - Scale: %f", input.cols, input.rows, targetWidth, targetHeight, scale);
+	
 	int width = input.cols * scale;
 	int height = input.rows * scale;
 
