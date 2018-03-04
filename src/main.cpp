@@ -20,7 +20,7 @@ int main (int argc, char *argv[]) {
 	Glib::signal_timeout().connect( sigc::mem_fun(&carService, &CarService::refreshStatus), 1000);
 
 	// Initializes the GUI:
-	auto app = Gtk::Application::create(argc, argv, "raspberry-pi-fpv-visor");
+	auto app = Gtk::Application::create(argc, argv, "raspberry.pi.fpv.visor");
 	
     HelloWorld helloWorld;
 	helloWorld.setCarService(carService);
