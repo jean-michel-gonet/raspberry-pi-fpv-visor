@@ -16,6 +16,7 @@ public:
     
 protected:
     bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
+	void on_size_allocate (Gtk::Allocation& allocation) override;
     bool on_timeout();
     Glib::RefPtr<Gdk::Pixbuf> capture(int width, int height);
 	cv::Mat resizeWithinTargetSize(const cv::Mat &input, const int targetWidth, const int targetHeight);

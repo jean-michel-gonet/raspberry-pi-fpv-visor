@@ -29,13 +29,41 @@ AutoViseur::AutoViseur() {
 
 AutoViseur::~AutoViseur() {
 }
+void MatToCairo(cv::Mat &MC3,cairo_surface_t *surface)
+{
+	cv::Mat MC4 = cv::Mat(cairo_image_surface_get_width(surface),
+						  cairo_image_surface_get_height(surface),
+						  CV_8UC4,
+						  cairo_image_surface_get_data(surface),
+						  cairo_image_surface_get_stride(surface));
+	
+	std::vector<cv::Mat> Imgs1;
+	std::vector<cv::Mat> Imgs2;
+	cv::split(MC4,Imgs1);
+	cv::split(MC3,Imgs2);
+	for(int i=0;i<3;i++)
+	{
+		Imgs1[i]=Imgs2[i];
+	}
+	// Alpha - прозрачность
+	Imgs1[3]=255;
+	cv::merge(Imgs1,MC4);
+}
+
+/**
+ * Si la taille du viseur change, on prépare un nouveau canevas.
+ */
+void AutoViseur::on_size_allocate (Gtk::Allocation& allocation) {
+	DrawingArea::on_size_allocate(allocation);
+	printf("AutoViseur::on_size_allocate\r\n");
+}
 
 bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
-    
+	
     Gtk::Allocation allocation = get_allocation();
     const int width = allocation.get_width();
     const int height = allocation.get_height();
-    
+	
     Glib::RefPtr<Gdk::Pixbuf> m_image = capture(width, height);
     Gdk::Cairo::set_source_pixbuf(cr,
                                   m_image,
@@ -93,7 +121,7 @@ cv::Mat AutoViseur::resizeWithinTargetSize(const cv::Mat &input, const int targe
 	float scaleY = ((float) targetHeight) / input.rows;
 	float scale = scaleX > scaleY ? scaleY : scaleX;
 
-	printf("Mat:[ %d x %d ] - Target:[ %d x %d ] - Scale: %f", input.cols, input.rows, targetWidth, targetHeight, scale);
+//	printf("Mat:[ %d x %d ] - Target:[ %d x %d ] - Scale: %f", input.cols, input.rows, targetWidth, targetHeight, scale);
 	
 	int width = input.cols * scale;
 	int height = input.rows * scale;
