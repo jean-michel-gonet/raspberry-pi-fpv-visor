@@ -35,10 +35,7 @@ void AutoViseur::on_size_allocate (Gtk::Allocation& allocation) {
 	DrawingArea::on_size_allocate(allocation);
 	
 	// Prepare a Pixbuf with the allocated size:
-	a_width = allocation.get_width();
-	a_height = allocation.get_height();
-
-	pixbufMat = PixbufMat::PixbufMat(a_width, a_height);
+	pixbufMat = PixbufMat::PixbufMat(allocation.get_width(), allocation.get_height());
 }
 
 
@@ -66,10 +63,7 @@ void MatToCairo(cv::Mat &MC3,cairo_surface_t *surface)
 bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
 	capture();
-	Gdk::Cairo::set_source_pixbuf(cr,
-                                  pixbufMat.getPixbuf(),
-                                  0,
-                                  0);
+	Gdk::Cairo::set_source_pixbuf(cr, pixbufMat.getPixbuf());
     cr->paint();
     return true;
 }

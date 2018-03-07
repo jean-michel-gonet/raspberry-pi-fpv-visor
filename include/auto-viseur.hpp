@@ -26,7 +26,6 @@ protected:
 private:
 	cv::VideoCapture videoCapture;
 	PixbufMat pixbufMat;
-	int a_width, a_height;
 };
 
 #endif
