@@ -22,18 +22,31 @@
 #include <iostream>
 #include <stdio.h>
 
-AutoViseur::AutoViseur() {
+AutoViseur::AutoViseur(): videoCapture(0) {
     set_size_request(INITIAL_WIDTH, INITIAL_HEIGHT);
     Glib::signal_timeout().connect( sigc::mem_fun(*this, &AutoViseur::on_timeout), 100);
 }
 
 AutoViseur::~AutoViseur() {
 }
+
+void AutoViseur::on_size_allocate (Gtk::Allocation& allocation) {
+	// Call the parent to do whatever needs to be done:
+	DrawingArea::on_size_allocate(allocation);
+	
+	// Prepare a Pixbuf with the allocated size:
+	a_width = allocation.get_width();
+	a_height = allocation.get_height();
+
+	pixbufMat = PixbufMat::PixbufMat(a_width, a_height);
+}
+
+
 void MatToCairo(cv::Mat &MC3,cairo_surface_t *surface)
 {
 	cv::Mat MC4 = cv::Mat(cairo_image_surface_get_width(surface),
 						  cairo_image_surface_get_height(surface),
-						  CV_8UC4,
+						  CV_8UC3,
 						  cairo_image_surface_get_data(surface),
 						  cairo_image_surface_get_stride(surface));
 	
@@ -50,23 +63,25 @@ void MatToCairo(cv::Mat &MC3,cairo_surface_t *surface)
 	cv::merge(Imgs1,MC4);
 }
 
-/**
- * Si la taille du viseur change, on prépare un nouveau canevas.
- */
-void AutoViseur::on_size_allocate (Gtk::Allocation& allocation) {
-	DrawingArea::on_size_allocate(allocation);
-	printf("AutoViseur::on_size_allocate\r\n");
-}
-
 bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
+
+	// Capture from webcam:
+	cv::Mat webcam;
+	videoCapture.read(webcam);
+
+	// Creates a Mat with same pixels source:
+	cv::Mat mat = cv::Mat(a_width,
+						  a_height,
+						  CV_8UC3);
+
+	// Prepare a Pixbuf with the allocated size:
+	Glib::RefPtr<Gdk::Pixbuf> pixbuf = Gdk::Pixbuf::create_from_data((guint8*)mat.data,
+															   Gdk::COLORSPACE_RGB,false,8,mat.cols,mat.rows,mat.step);
 	
-    Gtk::Allocation allocation = get_allocation();
-    const int width = allocation.get_width();
-    const int height = allocation.get_height();
-	
-    Glib::RefPtr<Gdk::Pixbuf> m_image = capture(width, height);
-    Gdk::Cairo::set_source_pixbuf(cr,
-                                  m_image,
+	cv::resize(webcam, mat, mat.size(), 0, 0, cv::INTER_LINEAR);
+
+	Gdk::Cairo::set_source_pixbuf(cr,
+                                  pixbuf,
                                   0,
                                   0);
     cr->paint();
@@ -74,8 +89,10 @@ bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
     return true;
 }
 
-bool AutoViseur::on_timeout()
-{
+/**
+ * Invalidates the whole widget rectangle, to force a complete redraw.
+ */
+bool AutoViseur::on_timeout() {
     auto win = get_window();
     if (win) {
         Gdk::Rectangle r(0, 0, get_allocation().get_width(),
@@ -85,34 +102,31 @@ bool AutoViseur::on_timeout()
     return true;
 }
 
-Glib::RefPtr<Gdk::Pixbuf> AutoViseur::capture(int width, int height) {
-    static cv::VideoCapture cap(0);
-    cv::Mat webcam, viseur;
-    
-    cap.read(webcam);
+void AutoViseur::capture() {
+    cv::Mat webcam;
+
+	// Capture from webcam:
+    videoCapture.read(webcam);
 	
-    
-    viseur = resizeWithinTargetSize(webcam, width, height);
+	// Prepare a Pixbuf with the allocated size:
+	Glib::RefPtr<Gdk::Pixbuf> pixbuf = Gdk::Pixbuf::create(Gdk::Colorspace::COLORSPACE_RGB,
+								 false,
+								 8,
+								 a_width,
+								 a_height);
+	
+	// Creates a Mat with same pixels source:
+	cv::Mat mat = cv::Mat(a_width,
+				  a_height,
+				  CV_8UC3,
+				  pixbuf->get_pixels(),
+				  pixbuf->get_rowstride());
 
-    // Write over
-    putText(viseur,
-            "OpenCV",
-            cv::Point(10,10),
-            cv::FONT_HERSHEY_SIMPLEX,
-            4,
-            cv::Scalar(255, 255, 255),
-            2,
-            cv::LINE_AA);
-    
-    // Display on a window:
-    return Gdk::Pixbuf::create_from_data(viseur.data,
-                                         Gdk::COLORSPACE_RGB,
-                                         false,
-                                         8,
-                                         viseur.cols,
-                                         viseur.rows,
-                                         viseur.step);
+	cv::resize(webcam, mat, mat.size(), 0, 0, cv::INTER_LINEAR);
 
+	cv::Mat viseur = pixbufMat.getMat();
+
+	cv::resize(webcam, viseur, viseur.size(), 0, 0, cv::INTER_LINEAR);
 }
 
 cv::Mat AutoViseur::resizeWithinTargetSize(const cv::Mat &input, const int targetWidth, const int targetHeight) {
