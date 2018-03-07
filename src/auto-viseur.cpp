@@ -65,27 +65,12 @@ void MatToCairo(cv::Mat &MC3,cairo_surface_t *surface)
 
 bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
-	// Capture from webcam:
-	cv::Mat webcam;
-	videoCapture.read(webcam);
-
-	// Creates a Mat with same pixels source:
-	cv::Mat mat = cv::Mat(a_width,
-						  a_height,
-						  CV_8UC3);
-
-	// Prepare a Pixbuf with the allocated size:
-	Glib::RefPtr<Gdk::Pixbuf> pixbuf = Gdk::Pixbuf::create_from_data((guint8*)mat.data,
-															   Gdk::COLORSPACE_RGB,false,8,mat.cols,mat.rows,mat.step);
-	
-	cv::resize(webcam, mat, mat.size(), 0, 0, cv::INTER_LINEAR);
-
+	capture();
 	Gdk::Cairo::set_source_pixbuf(cr,
-                                  pixbuf,
+                                  pixbufMat.getPixbuf(),
                                   0,
                                   0);
     cr->paint();
-    
     return true;
 }
 
@@ -105,27 +90,8 @@ bool AutoViseur::on_timeout() {
 void AutoViseur::capture() {
     cv::Mat webcam;
 
-	// Capture from webcam:
     videoCapture.read(webcam);
-	
-	// Prepare a Pixbuf with the allocated size:
-	Glib::RefPtr<Gdk::Pixbuf> pixbuf = Gdk::Pixbuf::create(Gdk::Colorspace::COLORSPACE_RGB,
-								 false,
-								 8,
-								 a_width,
-								 a_height);
-	
-	// Creates a Mat with same pixels source:
-	cv::Mat mat = cv::Mat(a_width,
-				  a_height,
-				  CV_8UC3,
-				  pixbuf->get_pixels(),
-				  pixbuf->get_rowstride());
-
-	cv::resize(webcam, mat, mat.size(), 0, 0, cv::INTER_LINEAR);
-
 	cv::Mat viseur = pixbufMat.getMat();
-
 	cv::resize(webcam, viseur, viseur.size(), 0, 0, cv::INTER_LINEAR);
 }
 
