@@ -38,36 +38,6 @@ void AutoViseur::on_size_allocate (Gtk::Allocation& allocation) {
 	pixbufMat = PixbufMat::PixbufMat(allocation.get_width(), allocation.get_height());
 }
 
-
-void MatToCairo(cv::Mat &MC3,cairo_surface_t *surface)
-{
-	cv::Mat MC4 = cv::Mat(cairo_image_surface_get_width(surface),
-						  cairo_image_surface_get_height(surface),
-						  CV_8UC3,
-						  cairo_image_surface_get_data(surface),
-						  cairo_image_surface_get_stride(surface));
-	
-	std::vector<cv::Mat> Imgs1;
-	std::vector<cv::Mat> Imgs2;
-	cv::split(MC4,Imgs1);
-	cv::split(MC3,Imgs2);
-	for(int i=0;i<3;i++)
-	{
-		Imgs1[i]=Imgs2[i];
-	}
-	// Alpha - прозрачность
-	Imgs1[3]=255;
-	cv::merge(Imgs1,MC4);
-}
-
-bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
-
-	capture();
-	Gdk::Cairo::set_source_pixbuf(cr, pixbufMat.getPixbuf());
-    cr->paint();
-    return true;
-}
-
 /**
  * Invalidates the whole widget rectangle, to force a complete redraw.
  */
@@ -79,6 +49,17 @@ bool AutoViseur::on_timeout() {
         win->invalidate_rect(r, false);
     }
     return true;
+}
+
+/**
+ * Called every time the widget needs to be redrawn.
+ */
+bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
+	
+	capture();
+	Gdk::Cairo::set_source_pixbuf(cr, pixbufMat.getPixbuf());
+	cr->paint();
+	return true;
 }
 
 void AutoViseur::capture() {
