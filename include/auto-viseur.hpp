@@ -5,7 +5,6 @@
 #include <gdkmm/pixbuf.h>
 #include "opencv2/core.hpp"
 #include "opencv2/highgui.hpp"
-#include "pixbuf-mat.hpp"
 
 
 class AutoViseur : public Gtk::DrawingArea {
@@ -20,12 +19,12 @@ protected:
     bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
 	void on_size_allocate (Gtk::Allocation& allocation) override;
     bool on_timeout();
-    void capture();
-	cv::Mat resizeWithinTargetSize(const cv::Mat &input, const int targetWidth, const int targetHeight);
 
 private:
 	cv::VideoCapture videoCapture;
-	PixbufMat pixbufMat;
+	cv::Mat mat;
+	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
+	
 };
 
 #endif
