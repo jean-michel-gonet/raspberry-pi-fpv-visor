@@ -3,7 +3,6 @@
 
 #include <gtkmm/drawingarea.h>
 #include <gdkmm/pixbuf.h>
-#include "opencv2/core.hpp"
 #include "opencv2/highgui.hpp"
 
 
