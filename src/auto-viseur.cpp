@@ -8,8 +8,6 @@
 
 #include "auto-viseur.hpp"
 
-#include "opencv2/imgproc.hpp"
-#include "opencv2/core.hpp"
 #include "opencv2/highgui.hpp"
 
 #include <ctime>
@@ -25,6 +23,7 @@
 AutoViseur::AutoViseur(): videoCapture(0) {
     set_size_request(INITIAL_WIDTH, INITIAL_HEIGHT);
     Glib::signal_timeout().connect( sigc::mem_fun(*this, &AutoViseur::on_timeout), 100);
+	videoCapture.set(CV_CAP_PROP_BUFFERSIZE, 3);
 }
 
 AutoViseur::~AutoViseur() {
