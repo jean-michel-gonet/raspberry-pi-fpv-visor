@@ -111,8 +111,9 @@ void AutoViseurCapture::stop() {
 // Configures the camera's capturing size
 // Depending on hardware, all sizes are not available.
 void AutoViseurCapture::setSize(int width, int height) {
-	videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT,height);
-	videoCapture.set(CV_CAP_PROP_FRAME_WIDTH,width);
+//	std::lock_guard<std::mutex> lock(configurationMutex);
+//	videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT,height);
+//	videoCapture.set(CV_CAP_PROP_FRAME_WIDTH,width);
 }
 
 // Sets the method to receice notifications
@@ -127,7 +128,6 @@ void AutoViseurCapture::doCapture() {
 		for(int n = 0; n < 3; n++) {
 			videoCapture.grab();
 		}
-		videoCapture.grab();
 		videoCapture.read(mat);
 		notifyCapture(mat);
 	}
