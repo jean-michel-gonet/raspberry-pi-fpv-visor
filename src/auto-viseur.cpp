@@ -20,10 +20,12 @@
 #include <iostream>
 #include <stdio.h>
 
-AutoViseur::AutoViseur(): videoCapture(0) {
+AutoViseur::AutoViseur():
+autoViseurCapture() {
     set_size_request(INITIAL_WIDTH, INITIAL_HEIGHT);
-    Glib::signal_timeout().connect( sigc::mem_fun(*this, &AutoViseur::on_timeout), 100);
-	videoCapture.set(CV_CAP_PROP_BUFFERSIZE, 3);
+	autoViseurCapture.setNotification(std::bind(&AutoViseur::notifyCapture, this, std::placeholders::_1));
+	captureDispatcher.connect(sigc::mem_fun(*this, &AutoViseur::on_capture));
+	autoViseurCapture.start();
 }
 
 AutoViseur::~AutoViseur() {
@@ -39,46 +41,94 @@ void AutoViseur::on_size_allocate (Gtk::Allocation& allocation) {
 	// Configures the video port to use allocated size:
 	// The viewport doesn't resize to all precise values; it
 	// simplifies to the nearest power of 2.
-	videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT,allocation.get_height());
-	videoCapture.set(CV_CAP_PROP_FRAME_WIDTH,allocation.get_width());
+	autoViseurCapture.setSize(allocation.get_width(), allocation.get_width());
+}
+
+void AutoViseur::notifyCapture(cv::Mat mat) {
+	lastCapture = mat;
+	captureDispatcher.emit();
 }
 
 /**
  * Invalidates the whole widget rectangle, to force a complete redraw.
  */
-bool AutoViseur::on_timeout() {
+void AutoViseur::on_capture() {
 	auto win = get_window();
 	if (win) {
 		Gdk::Rectangle r(0, 0, get_allocation().get_width(),
                          get_allocation().get_height());
 		win->invalidate_rect(r, false);
     }
-	return true;
 }
 
 /**
  * Called every time the widget needs to be redrawn.
  */
 bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
-	
-	// Reads an image from video capture:
-	videoCapture.read(mat);
-
-	// Initializes a pixbuf sharing the same data as the mat:
-	pixbuf = Gdk::Pixbuf::create_from_data((guint8*)mat.data,
-										   Gdk::COLORSPACE_RGB,
-										   false,
-										   8,
-										   mat.cols,
-										   mat.rows,
-										   mat.step);
-
-	// Request to copy the pixbuf over the Cairo context:
-	Gdk::Cairo::set_source_pixbuf(cr, pixbuf);
-	
-	// Refresh the Cairo context:
-	cr->paint();
+	if (!lastCapture.empty()) {
+		// Initializes a pixbuf sharing the same data as the mat:
+		pixbuf = Gdk::Pixbuf::create_from_data((guint8*)lastCapture.data,
+											   Gdk::COLORSPACE_RGB,
+											   false,
+											   8,
+											   lastCapture.cols,
+											   lastCapture.rows,
+											   lastCapture.step);
+		
+		// Request to copy the pixbuf over the Cairo context:
+		Gdk::Cairo::set_source_pixbuf(cr, pixbuf);
+		
+		// Refresh the Cairo context:
+		cr->paint();
+	}
 	
 	// Call me next time.
 	return true;
+}
+
+AutoViseurCapture::AutoViseurCapture():
+videoCapture(0),
+configurationMutex(),
+separatedThread(nullptr),
+mustStop(false) {
+}
+
+// Starts capturing images from camera.
+void AutoViseurCapture::start() {
+	if (!separatedThread) {
+		separatedThread = new std::thread([this] { doCapture(); });
+	}
+}
+
+// Stops capturing images from camera.
+void AutoViseurCapture::stop() {
+	mustStop = true;
+	if (separatedThread) {
+		separatedThread->join();
+	}
+}
+
+// Configures the camera's capturing size
+// Depending on hardware, all sizes are not available.
+void AutoViseurCapture::setSize(int width, int height) {
+	videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT,height);
+	videoCapture.set(CV_CAP_PROP_FRAME_WIDTH,width);
+}
+
+// Sets the method to receice notifications
+// each time a new image is captured and ready.
+void AutoViseurCapture::setNotification(std::function<void (cv::Mat)> n) {
+	notifyCapture = n;
+}
+
+
+void AutoViseurCapture::doCapture() {
+	while(!mustStop) {
+		for(int n = 0; n < 3; n++) {
+			videoCapture.grab();
+		}
+		videoCapture.grab();
+		videoCapture.read(mat);
+		notifyCapture(mat);
+	}
 }
