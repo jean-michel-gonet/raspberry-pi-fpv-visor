@@ -14,7 +14,7 @@
 #include <glibmm/main.h>
 #include <cairomm/context.h>
 #include <giomm/resource.h>
-#include <gdkmm/general.h> // set_source_pixbuf()
+#include <gdkmm/general.h>
 #include <glibmm/fileutils.h>
 
 #include <iostream>
@@ -29,6 +29,7 @@ autoViseurCapture() {
 }
 
 AutoViseur::~AutoViseur() {
+	autoViseurCapture.stop();
 }
 
 /**
@@ -96,6 +97,7 @@ mustStop(false) {
 // Starts capturing images from camera.
 void AutoViseurCapture::start() {
 	if (!separatedThread) {
+		mustStop = false;
 		separatedThread = new std::thread([this] { doCapture(); });
 	}
 }
@@ -111,6 +113,7 @@ void AutoViseurCapture::stop() {
 // Configures the camera's capturing size
 // Depending on hardware, all sizes are not available.
 void AutoViseurCapture::setSize(int width, int height) {
+	std::lock_guard<std::mutex> lock(configurationMutex);
 	videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT,height);
 	videoCapture.set(CV_CAP_PROP_FRAME_WIDTH,width);
 }
@@ -124,11 +127,14 @@ void AutoViseurCapture::setNotification(std::function<void (cv::Mat)> n) {
 
 void AutoViseurCapture::doCapture() {
 	while(!mustStop) {
-		for(int n = 0; n < 3; n++) {
+		{
+			std::lock_guard<std::mutex> lock(configurationMutex);
+			for(int n = 0; n < 2; n++) {
+				videoCapture.grab();
+			}
 			videoCapture.grab();
+			videoCapture.read(mat);
 		}
-		videoCapture.grab();
-		videoCapture.read(mat);
 		notifyCapture(mat);
 	}
 }
