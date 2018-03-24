@@ -6,7 +6,6 @@
 #include <gtkmm/box.h>
 
 #include "auto-viseur.hpp"
-#include "car-service.hpp"
 
 class MainWindow : public Gtk::Window {
     
@@ -19,9 +18,6 @@ protected:
     Gtk::Button m_button;
     Gtk::Box m_box;
     AutoViseur autoViseur;
-	
-private:
-	CarService *carService;
 };
 
 #endif

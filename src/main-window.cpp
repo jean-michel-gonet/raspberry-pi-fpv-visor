@@ -1,12 +1,10 @@
 
 #include <iostream>
 #include "main-window.hpp"
-#include "service-locator.hpp"
 
 MainWindow::MainWindow():
 m_button("Hello World"),
 autoViseur(),
-carService(ServiceLocator::newCarService()),
 m_box(Gtk::ORIENTATION_VERTICAL) {
     set_border_width(10);
     
