@@ -8,7 +8,6 @@
 
 #include "image-capture-service-from-camera.hpp"
 
-
 class AutoViseur : public Gtk::DrawingArea {
 public:
     static const int INITIAL_WIDTH = 480;
@@ -24,10 +23,17 @@ protected:
 	void on_capture();
 
 private:
+	int width;
+	int height;
+	Pango::FontDescription fontDescription;
 	ImageCaptureService* imageCaptureService;
 	cv::Mat lastCapture;
 	Glib::Dispatcher captureDispatcher;
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
+	void displayTextTopLeft(const Cairo::RefPtr<Cairo::Context>& cr, char *text);
+	void displayTextBottomLeft(const Cairo::RefPtr<Cairo::Context>& cr, char *text);
+	void displayTextTopRight(const Cairo::RefPtr<Cairo::Context>& cr, char *text);
+	void displayCross(const Cairo::RefPtr<Cairo::Context>& cr, int x, int y);
 };
 
 
