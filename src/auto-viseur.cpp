@@ -7,6 +7,7 @@
 //
 
 #include "auto-viseur.hpp"
+#include "service-locator.hpp"
 
 #include "opencv2/highgui.hpp"
 
@@ -21,15 +22,15 @@
 #include <stdio.h>
 
 AutoViseur::AutoViseur():
-imageCaptureService() {
+imageCaptureService(ServiceLocator::newImageCaptureService()) {
     set_size_request(INITIAL_WIDTH, INITIAL_HEIGHT);
-	imageCaptureService.setNotificationCallback(std::bind(&AutoViseur::notifyCapture, this));
+	imageCaptureService->setNotificationCallback(std::bind(&AutoViseur::notifyCapture, this));
 	captureDispatcher.connect(sigc::mem_fun(*this, &AutoViseur::on_capture));
-	imageCaptureService.start();
+	imageCaptureService->start();
 }
 
 AutoViseur::~AutoViseur() {
-	imageCaptureService.stop();
+	imageCaptureService->stop();
 }
 
 /**
@@ -42,11 +43,11 @@ void AutoViseur::on_size_allocate (Gtk::Allocation& allocation) {
 	// Configures the video port to use allocated size:
 	// The viewport doesn't resize to all precise values; it
 	// simplifies to the nearest power of 2.
-	imageCaptureService.requestSize(allocation.get_width(), allocation.get_width());
+	imageCaptureService->requestSize(allocation.get_width(), allocation.get_width());
 }
 
 void AutoViseur::notifyCapture() {
-	lastCapture = imageCaptureService.getLastImage();
+	lastCapture = imageCaptureService->getLastImage();
 	captureDispatcher.emit();
 }
 

@@ -24,7 +24,7 @@ protected:
 	void on_capture();
 
 private:
-	ImageCaptureServiceFromCamera imageCaptureService;
+	ImageCaptureService* imageCaptureService;
 	cv::Mat lastCapture;
 	Glib::Dispatcher captureDispatcher;
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf;

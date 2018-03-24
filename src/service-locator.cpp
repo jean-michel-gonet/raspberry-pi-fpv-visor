@@ -12,6 +12,8 @@ ServiceLocator* ServiceLocator::instance = nullptr;
 
 CarService* ServiceLocator::carService = nullptr;
 
+ImageCaptureService* ServiceLocator::imageCaptureService = nullptr;
+
 ServiceLocator::ServiceLocator() {
 	// Nothing to do.
 }
@@ -28,4 +30,11 @@ CarService* ServiceLocator::newCarService() {
 		carService = new CarService();
 	}
 	return carService;
+}
+
+ImageCaptureService * ServiceLocator::newImageCaptureService() {
+	if (imageCaptureService == nullptr) {
+		imageCaptureService = new ImageCaptureServiceFromCamera();
+	}
+	return imageCaptureService;
 }
