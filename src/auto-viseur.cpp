@@ -9,18 +9,6 @@
 #include "auto-viseur.hpp"
 #include "service-locator.hpp"
 
-#include "opencv2/highgui.hpp"
-
-#include <ctime>
-#include <glibmm/main.h>
-#include <cairomm/context.h>
-#include <giomm/resource.h>
-#include <gdkmm/general.h>
-#include <glibmm/fileutils.h>
-
-#include <iostream>
-#include <stdio.h>
-
 AutoViseur::AutoViseur():
 imageCaptureService(ServiceLocator::newImageCaptureService()) {
     set_size_request(INITIAL_WIDTH, INITIAL_HEIGHT);

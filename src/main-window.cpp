@@ -25,4 +25,3 @@ MainWindow::~MainWindow() {
 void MainWindow::on_button_clicked() {
     std::cout << "Hello World" << std::endl;
 }
-
