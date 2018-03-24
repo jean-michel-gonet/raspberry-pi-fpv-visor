@@ -1,16 +1,16 @@
 
 #include <iostream>
-#include "hello-world.hpp"
+#include "main-window.hpp"
 #include "service-locator.hpp"
 
-HelloWorld::HelloWorld():
+MainWindow::MainWindow():
 m_button("Hello World"),
 autoViseur(),
 carService(ServiceLocator::newCarService()),
 m_box(Gtk::ORIENTATION_VERTICAL) {
     set_border_width(10);
     
-    m_button.signal_clicked().connect(sigc::mem_fun(*this, &HelloWorld::on_button_clicked));
+    m_button.signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_button_clicked));
     m_button.show();
     m_box.pack_start(m_button, Gtk::PACK_SHRINK);
     
@@ -21,10 +21,10 @@ m_box(Gtk::ORIENTATION_VERTICAL) {
     m_box.show();
 }
 
-HelloWorld::~HelloWorld() {
+MainWindow::~MainWindow() {
 }
 
-void HelloWorld::on_button_clicked() {
+void MainWindow::on_button_clicked() {
     std::cout << "Hello World" << std::endl;
 }
 

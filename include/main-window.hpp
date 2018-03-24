@@ -8,11 +8,11 @@
 #include "auto-viseur.hpp"
 #include "car-service.hpp"
 
-class HelloWorld : public Gtk::Window {
+class MainWindow : public Gtk::Window {
     
 public:
-    HelloWorld();
-    virtual ~HelloWorld();
+    MainWindow();
+    virtual ~MainWindow();
     
 protected:
     void on_button_clicked();

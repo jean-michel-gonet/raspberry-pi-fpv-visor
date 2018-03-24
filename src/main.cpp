@@ -10,7 +10,7 @@
 #include <gtkmm.h>
 #include <gtkmm/application.h>
 
-#include "hello-world.hpp"
+#include "main-window.hpp"
 #include "car-service.hpp"
 
 int main (int argc, char *argv[]) {
@@ -22,8 +22,8 @@ int main (int argc, char *argv[]) {
 	// Initializes the GUI:
 	auto app = Gtk::Application::create(argc, argv, "raspberry.pi.fpv.visor");
 	
-    HelloWorld helloWorld;
+    MainWindow mainWindow;
 
     // Launches the GUI:
-    return app->run(helloWorld);
+    return app->run(mainWindow);
 }
