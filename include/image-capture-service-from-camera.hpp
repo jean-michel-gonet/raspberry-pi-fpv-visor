@@ -2,6 +2,7 @@
 #define image_capture_service_from_camera_hpp
 
 #include <thread>
+#include <mutex>
 
 #include "image-capture-service.hpp"
 
