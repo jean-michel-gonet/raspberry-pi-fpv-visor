@@ -1,5 +1,5 @@
-#ifndef HELLOWORLD_H
-#define HELLOWORLD_H
+#ifndef main_window_hpp
+#define main_window_hpp
 
 #include <gtkmm/button.h>
 #include <gtkmm/window.h>

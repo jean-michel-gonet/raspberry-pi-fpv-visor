@@ -1,43 +1,12 @@
 #ifndef AUTO_VISEUR_H
 #define AUTO_VISEUR_H
 
-#include "opencv2/highgui.hpp"
+#include <opencv2/highgui.hpp>
 #include <gtkmm.h>
 #include <thread>
 #include <mutex>
 
-
-class AutoViseurCapture {
-public:
-	// Starts capturing images from camera.
-	void start();
-	
-	// Stops capturing images from camera.
-	void stop();
-	
-	// Configures the camera's capturing size
-	// Depending on hardware, all sizes are not available.
-	void setSize(int width, int height);
-	
-	// Sets the method to receice notifications
-	// each time a new image is captured and ready.
-	void setNotification(std::function<void (cv::Mat)>);
-		
-	// Constructor.
-	AutoViseurCapture();
-	
-	// Destructor.
-	virtual ~AutoViseurCapture() = default;
-	
-private:
-	bool mustStop;
-	std::thread* separatedThread;
-	mutable std::mutex configurationMutex;
-	cv::Mat mat;
-	cv::VideoCapture videoCapture;
-	void doCapture();
-	std::function<void (cv::Mat)> notifyCapture;
-};
+#include "image-capture-service-from-camera.hpp"
 
 
 class AutoViseur : public Gtk::DrawingArea {
@@ -45,7 +14,7 @@ public:
     static const int INITIAL_WIDTH = 480;
     static const int INITIAL_HEIGHT = 320;
 
-	void notifyCapture(cv::Mat mat);
+	void notifyCapture();
     AutoViseur();
     virtual ~AutoViseur();
     
@@ -55,7 +24,7 @@ protected:
 	void on_capture();
 
 private:
-	AutoViseurCapture autoViseurCapture;
+	ImageCaptureServiceFromCamera imageCaptureService;
 	cv::Mat lastCapture;
 	Glib::Dispatcher captureDispatcher;
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf;

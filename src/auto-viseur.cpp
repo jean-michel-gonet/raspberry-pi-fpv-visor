@@ -21,15 +21,15 @@
 #include <stdio.h>
 
 AutoViseur::AutoViseur():
-autoViseurCapture() {
+imageCaptureService() {
     set_size_request(INITIAL_WIDTH, INITIAL_HEIGHT);
-	autoViseurCapture.setNotification(std::bind(&AutoViseur::notifyCapture, this, std::placeholders::_1));
+	imageCaptureService.setNotificationCallback(std::bind(&AutoViseur::notifyCapture, this));
 	captureDispatcher.connect(sigc::mem_fun(*this, &AutoViseur::on_capture));
-	autoViseurCapture.start();
+	imageCaptureService.start();
 }
 
 AutoViseur::~AutoViseur() {
-	autoViseurCapture.stop();
+	imageCaptureService.stop();
 }
 
 /**
@@ -42,11 +42,11 @@ void AutoViseur::on_size_allocate (Gtk::Allocation& allocation) {
 	// Configures the video port to use allocated size:
 	// The viewport doesn't resize to all precise values; it
 	// simplifies to the nearest power of 2.
-	autoViseurCapture.setSize(allocation.get_width(), allocation.get_width());
+	imageCaptureService.requestSize(allocation.get_width(), allocation.get_width());
 }
 
-void AutoViseur::notifyCapture(cv::Mat mat) {
-	lastCapture = mat;
+void AutoViseur::notifyCapture() {
+	lastCapture = imageCaptureService.getLastImage();
 	captureDispatcher.emit();
 }
 
@@ -87,54 +87,3 @@ bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 	return true;
 }
 
-AutoViseurCapture::AutoViseurCapture():
-videoCapture(0),
-configurationMutex(),
-separatedThread(nullptr),
-mustStop(false) {
-}
-
-// Starts capturing images from camera.
-void AutoViseurCapture::start() {
-	if (!separatedThread) {
-		mustStop = false;
-		separatedThread = new std::thread([this] { doCapture(); });
-	}
-}
-
-// Stops capturing images from camera.
-void AutoViseurCapture::stop() {
-	mustStop = true;
-	if (separatedThread) {
-		separatedThread->join();
-	}
-}
-
-// Configures the camera's capturing size
-// Depending on hardware, all sizes are not available.
-void AutoViseurCapture::setSize(int width, int height) {
-	std::lock_guard<std::mutex> lock(configurationMutex);
-	videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT,height);
-	videoCapture.set(CV_CAP_PROP_FRAME_WIDTH,width);
-}
-
-// Sets the method to receice notifications
-// each time a new image is captured and ready.
-void AutoViseurCapture::setNotification(std::function<void (cv::Mat)> n) {
-	notifyCapture = n;
-}
-
-
-void AutoViseurCapture::doCapture() {
-	while(!mustStop) {
-		{
-			std::lock_guard<std::mutex> lock(configurationMutex);
-			for(int n = 0; n < 2; n++) {
-				videoCapture.grab();
-			}
-			videoCapture.grab();
-			videoCapture.read(mat);
-		}
-		notifyCapture(mat);
-	}
-}
