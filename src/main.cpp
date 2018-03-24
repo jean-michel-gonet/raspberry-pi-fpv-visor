@@ -23,7 +23,6 @@ int main (int argc, char *argv[]) {
 	auto app = Gtk::Application::create(argc, argv, "raspberry.pi.fpv.visor");
 	
     HelloWorld helloWorld;
-	helloWorld.setCarService(carService);
 
     // Launches the GUI:
     return app->run(helloWorld);

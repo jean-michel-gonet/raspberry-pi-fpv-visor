@@ -1,10 +1,12 @@
 
 #include <iostream>
 #include "hello-world.hpp"
+#include "service-locator.hpp"
 
 HelloWorld::HelloWorld():
 m_button("Hello World"),
 autoViseur(),
+carService(ServiceLocator::newCarService()),
 m_box(Gtk::ORIENTATION_VERTICAL) {
     set_border_width(10);
     
@@ -26,6 +28,3 @@ void HelloWorld::on_button_clicked() {
     std::cout << "Hello World" << std::endl;
 }
 
-void HelloWorld::setCarService(CarService &carService) {
-	this->carService = carService;
-}

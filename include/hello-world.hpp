@@ -13,7 +13,6 @@ class HelloWorld : public Gtk::Window {
 public:
     HelloWorld();
     virtual ~HelloWorld();
-	void setCarService(CarService &carService);
     
 protected:
     void on_button_clicked();
@@ -22,7 +21,7 @@ protected:
     AutoViseur autoViseur;
 	
 private:
-	CarService carService;
+	CarService *carService;
 };
 
 #endif
