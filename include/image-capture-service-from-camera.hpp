@@ -9,11 +9,11 @@ class ImageCaptureServiceFromCamera : public ImageCaptureService {
 public:
 	ImageCaptureServiceFromCamera();
 	virtual ~ImageCaptureServiceFromCamera() = default;
-	virtual void start();
-	virtual void stop();
-	virtual void requestSize(int width, int height);
-	virtual cv::Mat getLastImage();
-	virtual void setNotificationCallback(std::function<void ()> n);
+	virtual void start() override;
+	virtual void stop() override ;
+	virtual void requestSize(int width, int height) override;
+	virtual cv::Mat getLastImage() override;
+	virtual void setNotificationCallback(std::function<void ()> n) override;
 private:
 	bool mustStop;
 	std::thread* separatedThread;
