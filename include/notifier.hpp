@@ -3,9 +3,7 @@
 
 #include <functional>
 
-/**
- * Interface describing a service that calls back when event occurs.
- */
+/** Interface describing a service that calls back when event occurs. */
 class Notifier {
 public:
 	virtual ~Notifier() = default;

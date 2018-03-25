@@ -6,7 +6,8 @@
 #include <thread>
 #include <mutex>
 
-#include "image-capture-service-from-camera.hpp"
+#include "image-capture-service.hpp"
+#include "car-service.hpp"
 
 class AutoViseur : public Gtk::DrawingArea {
 public:
@@ -27,6 +28,7 @@ private:
 	int height;
 	Pango::FontDescription fontDescription;
 	ImageCaptureService* imageCaptureService;
+	CarService* carService;
 	cv::Mat lastCapture;
 	Glib::Dispatcher captureDispatcher;
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf;

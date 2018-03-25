@@ -13,6 +13,7 @@
 
 AutoViseur::AutoViseur():
 imageCaptureService(ServiceLocator::newImageCaptureService()),
+carService(ServiceLocator::newCarService()),
 fontDescription() {
 	fontDescription.set_family("Monospace");
 	fontDescription.set_weight(Pango::WEIGHT_BOLD);
@@ -81,19 +82,20 @@ bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 		cr->paint();
 		
 		// Display some text:
+		CarStatus carStatus = carService->getLastStatus();
 		cr->set_source_rgb(1.0, 1.0, 1.0);
 		char buffer[50];
 
-		sprintf(buffer, "A100");
+		sprintf(buffer, "%.1f km/h", carStatus.currentSpeed);
 		displayTextTopLeft(cr, buffer);
 
-		sprintf(buffer, "B200");
+		sprintf(buffer, "%.1f V", carStatus.accumulatorCharge);
 		displayTextBottomLeft(cr, buffer);
 
 		sprintf(buffer, "C300");
 		displayTextTopRight(cr, buffer);
 		
-		displayCross(cr, 125, 125);
+		displayCross(cr, carStatus.positionSteering, carStatus.positionAccelerator);
 	}
 	
 	// Call me next time.
