@@ -74,7 +74,7 @@ bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 											   8,
 											   lastCapture.cols,
 											   lastCapture.rows,
-											   lastCapture.step);
+											   (int) lastCapture.step);
 		
 		// Request to copy the pixbuf over the Cairo context:
 		Gdk::Cairo::set_source_pixbuf(cr, pixbuf);
