@@ -10,9 +10,9 @@
 
 ServiceLocator* ServiceLocator::instance = nullptr;
 
-CarService* ServiceLocator::carService = nullptr;
+CarServiceTormentECX* ServiceLocator::carService = nullptr;
 
-ImageCaptureService* ServiceLocator::imageCaptureService = nullptr;
+ImageCaptureServiceFromCamera* ServiceLocator::imageCaptureService = nullptr;
 
 ServiceLocator::ServiceLocator() {
 	// Nothing to do.
@@ -27,7 +27,7 @@ ServiceLocator* ServiceLocator::getInstance() {
 
 CarService* ServiceLocator::newCarService() {
 	if (carService == nullptr) {
-		carService = new CarService();
+		carService = new CarServiceTormentECX();
 	}
 	return carService;
 }

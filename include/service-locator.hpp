@@ -6,7 +6,7 @@
 //  Copyright © 2018 Jean-Michel Gonet. All rights reserved.
 //
 
-#include "car-service.hpp"
+#include "car-service-torment-ecx.hpp"
 #include "image-capture-service-from-camera.hpp"
 
 #ifndef service_locator_hpp
@@ -23,7 +23,7 @@ public:
 
 private:
 	static ServiceLocator* instance;
-	static CarService* carService;
-	static ImageCaptureService* imageCaptureService;
+	static CarServiceTormentECX* carService;
+	static ImageCaptureServiceFromCamera* imageCaptureService;
 };
 #endif

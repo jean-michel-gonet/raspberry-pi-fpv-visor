@@ -1,6 +1,8 @@
 #ifndef notifier_hpp
 #define notifier_hpp
 
+#include <functional>
+
 /**
  * Interface describing a service that calls back when event occurs.
  */
