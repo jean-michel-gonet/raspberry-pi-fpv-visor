@@ -12,6 +12,7 @@ const int CarServiceTormentECX::REFRESH_RATE_IN_MS = 1000;
 
 CarServiceTormentECX::CarServiceTormentECX():
 separatedThread(nullptr),
+i2cClient(nullptr),
 mustStop(false)  {
 	start();
 }
@@ -35,20 +36,26 @@ void CarServiceTormentECX::stop() {
 }
 
 void CarServiceTormentECX::refresh() {
+	double d;
+	int i;
 	while(!mustStop) {
 		for (int n = 0; n < 4; n++) {
 			switch(n) {
 				case 0:
-					latestCarStatus.currentSpeed = 25.3;
+					d = i2cClient->i2cRead(0);
+					latestCarStatus.currentSpeed = d / 7;
 					break;
 				case 1:
-					latestCarStatus.accumulatorCharge = 8.2;
+					d = i2cClient->i2cRead(1);
+					latestCarStatus.accumulatorCharge = d / 25;
 					break;
 				case 2:
-					latestCarStatus.positionSteering = 190;
+					i = i2cClient->i2cRead(2);
+					latestCarStatus.positionSteering = i;
 					break;
 				case 3:
-					latestCarStatus.positionAccelerator = 85;
+					i = i2cClient->i2cRead(3);
+					latestCarStatus.positionAccelerator = i;
 					break;
 			}
 			
@@ -68,3 +75,8 @@ void CarServiceTormentECX::setNotificationCallback(std::function<void ()> n) {
 CarStatus CarServiceTormentECX::getLastStatus() {
 	return latestCarStatus;
 }
+
+void CarServiceTormentECX::setI2cClient(I2cClient* c) {
+	i2cClient = c;
+}
+

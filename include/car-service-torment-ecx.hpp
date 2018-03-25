@@ -12,6 +12,7 @@
 #include <thread>
 
 #include "car-service.hpp"
+#include "i2c-client.hpp"
 
 /** Implementation of a car service to retrieve informations from the Torment-ECX.*/
 class CarServiceTormentECX : public CarService {
@@ -22,10 +23,13 @@ public:
 	virtual CarStatus getLastStatus() override;
 	virtual void setNotificationCallback(std::function<void ()> n) override;
 
+	void setI2cClient(I2cClient* c);
+
 private:
 	bool mustStop;
 	std::thread* separatedThread;
 	CarStatus latestCarStatus;
+	I2cClient *i2cClient;
 	std::function<void ()> notifyCapture;
 	void refresh();
 	void start();

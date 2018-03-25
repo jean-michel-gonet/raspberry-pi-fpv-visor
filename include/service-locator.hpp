@@ -8,6 +8,7 @@
 
 #include "car-service-torment-ecx.hpp"
 #include "image-capture-service-from-camera.hpp"
+#include "i2c-client-mock.hpp"
 
 #ifndef service_locator_hpp
 #define service_locator_hpp
@@ -17,6 +18,7 @@ public:
 	static ServiceLocator* getInstance();
 	static CarService* newCarService();
 	static ImageCaptureService* newImageCaptureService();
+	static I2cClient* newI2cClient();
 	
 	ServiceLocator();
 	virtual ~ServiceLocator() = default;
@@ -25,5 +27,6 @@ private:
 	static ServiceLocator* instance;
 	static CarServiceTormentECX* carService;
 	static ImageCaptureServiceFromCamera* imageCaptureService;
+	static I2cClientMock* i2cClient;
 };
 #endif
