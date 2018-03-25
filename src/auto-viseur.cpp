@@ -7,6 +7,9 @@
 //
 
 #include <stdio.h>
+#include "opencv2/imgproc.hpp"
+#include "opencv2/core.hpp"
+#include "opencv2/highgui.hpp"
 
 #include "auto-viseur.hpp"
 #include "service-locator.hpp"
@@ -68,14 +71,22 @@ void AutoViseur::on_capture() {
  */
 bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 	if (!lastCapture.empty()) {
+		
+		// Resizes the captured image to the allocation:
+		cv::Mat mat;
+		resize(lastCapture,
+			   mat,
+			   cv::Size(width, height),
+			   cv::INTER_AREA);
+		
 		// Initializes a pixbuf sharing the same data as the mat:
-		pixbuf = Gdk::Pixbuf::create_from_data((guint8*)lastCapture.data,
+		pixbuf = Gdk::Pixbuf::create_from_data((guint8*)mat.data,
 											   Gdk::COLORSPACE_RGB,
 											   false,
 											   8,
-											   lastCapture.cols,
-											   lastCapture.rows,
-											   (int) lastCapture.step);
+											   mat.cols,
+											   mat.rows,
+											   (int) mat.step);
 		
 		// Request to copy the pixbuf over the Cairo context:
 		Gdk::Cairo::set_source_pixbuf(cr, pixbuf);
