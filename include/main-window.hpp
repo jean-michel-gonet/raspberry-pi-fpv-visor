@@ -15,6 +15,8 @@ public:
     
 protected:
     void on_button_clicked();
+	bool on_key_press_event(GdkEventKey* event) override;
+	bool probablyInFullScreen;
     Gtk::Button m_button;
     Gtk::Box m_box;
     AutoViseur autoViseur;
