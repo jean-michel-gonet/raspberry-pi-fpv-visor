@@ -26,7 +26,7 @@ else
 	CFLAGS += -std=c++14 -stdlib=libc++ -O2
 endif
 
-LIB := -pthread $(shell pkg-config gtkmm-3.0 opencv --libs)
+LIB := -pthread $(shell pkg-config gtkmm-3.0 opencv --libs) -lwiringPi
 INC := -I include $(shell pkg-config gtkmm-3.0 opencv --cflags)
 
 $(TARGET): $(OBJECTS)

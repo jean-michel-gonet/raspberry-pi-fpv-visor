@@ -14,7 +14,7 @@ CarServiceTormentECX* ServiceLocator::carService = nullptr;
 
 ImageCaptureServiceFromCamera* ServiceLocator::imageCaptureService = nullptr;
 
-I2cClientMock* ServiceLocator::i2cClient = nullptr;
+I2cClientWiringPi* ServiceLocator::i2cClient = nullptr;
 
 ServiceLocator::ServiceLocator() {
 	// Nothing to do.
@@ -44,7 +44,7 @@ ImageCaptureService * ServiceLocator::newImageCaptureService() {
 
 I2cClient* ServiceLocator::newI2cClient() {
 	if (i2cClient == nullptr) {
-		i2cClient = new I2cClientMock();
+		i2cClient = new I2cClientWiringPi();
 	}
 	return i2cClient;
 }
