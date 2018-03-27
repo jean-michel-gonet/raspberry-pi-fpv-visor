@@ -6,6 +6,8 @@
 //  Copyright © 2018 Jean-Michel Gonet. All rights reserved.
 //
 
+#include <stdio.h>
+
 #include "car-service-torment-ecx.hpp"
 
 const int CarServiceTormentECX::REFRESH_RATE_IN_MS = 1000;
@@ -41,19 +43,23 @@ void CarServiceTormentECX::refresh() {
 		for (int n = 0; n < 4; n++) {
 			switch(n) {
 				case 0:
-					d = i2cClient->i2cRead(0);
+					d = i2cClient->i2cRead(22);
+					printf("speed: %f\n", d);
 					latestCarStatus.currentSpeed = d / 7;
 					break;
 				case 1:
-					d = i2cClient->i2cRead(1);
+					d = i2cClient->i2cRead(12);
+					printf("acc: %f\n", d);
 					latestCarStatus.accumulatorCharge = d / 25;
 					break;
 				case 2:
-					i = i2cClient->i2cRead(2);
+					i = i2cClient->i2cRead(17);
+					printf("steering: %d\n", i);
 					latestCarStatus.positionSteering = i;
 					break;
 				case 3:
-					i = i2cClient->i2cRead(3);
+					i = i2cClient->i2cRead(16);
+					printf("move: %d\n", i);
 					latestCarStatus.positionAccelerator = i;
 					break;
 			}
