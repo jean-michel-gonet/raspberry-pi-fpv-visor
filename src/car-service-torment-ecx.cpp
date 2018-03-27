@@ -14,7 +14,6 @@ CarServiceTormentECX::CarServiceTormentECX():
 separatedThread(nullptr),
 i2cClient(nullptr),
 mustStop(false)  {
-	start();
 }
 
 CarServiceTormentECX::~CarServiceTormentECX() {

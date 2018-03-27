@@ -31,6 +31,7 @@ CarService* ServiceLocator::newCarService() {
 	if (carService == nullptr) {
 		carService = new CarServiceTormentECX();
 		carService->setI2cClient(newI2cClient());
+		carService->start();
 	}
 	return carService;
 }

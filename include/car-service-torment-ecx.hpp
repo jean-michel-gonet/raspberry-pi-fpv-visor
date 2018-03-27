@@ -18,11 +18,15 @@
 class CarServiceTormentECX : public CarService {
 public:
 	static const int REFRESH_RATE_IN_MS;
+
 	CarServiceTormentECX();
 	virtual ~CarServiceTormentECX();
+	
 	virtual CarStatus getLastStatus() override;
 	virtual void setNotificationCallback(std::function<void ()> n) override;
 
+	void start();
+	void stop();
 	void setI2cClient(I2cClient* c);
 
 private:
@@ -32,8 +36,6 @@ private:
 	I2cClient *i2cClient;
 	std::function<void ()> notifyCapture;
 	void refresh();
-	void start();
-	void stop();
 };
 
 #endif
