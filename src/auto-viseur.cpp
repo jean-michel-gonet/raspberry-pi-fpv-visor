@@ -103,7 +103,7 @@ bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 		sprintf(buffer, "%.1f V", carStatus.accumulatorCharge);
 		displayTextBottomLeft(cr, buffer);
 
-		sprintf(buffer, "C300");
+		sprintf(buffer, "PWM %.1f V", carStatus.pwm);
 		displayTextTopRight(cr, buffer);
 		
 		displayCross(cr, carStatus.positionSteering, carStatus.positionAccelerator);
@@ -137,7 +137,7 @@ void AutoViseur::displayCross(const Cairo::RefPtr<Cairo::Context>& cr, int x, in
 void AutoViseur::displayTextTopLeft(const Cairo::RefPtr<Cairo::Context>& cr, char *text) {
 	auto layout = create_pango_layout(text);
 	layout->set_font_description(fontDescription);
-	cr->move_to(0, 0);
+	cr->move_to(0, 20);
 	layout->show_in_cairo_context(cr);
 }
 
@@ -159,6 +159,6 @@ void AutoViseur::displayTextTopRight(const Cairo::RefPtr<Cairo::Context>& cr, ch
 	int textWidth, textHeight;
 	layout->get_pixel_size(textWidth, textHeight);
 	
-	cr->move_to(width - textWidth, 0);
+	cr->move_to(width - textWidth, 20);
 	layout->show_in_cairo_context(cr);
 }

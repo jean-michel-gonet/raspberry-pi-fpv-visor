@@ -19,6 +19,9 @@ public:
 	
 	/** The current accumulator charge, in V.*/
 	double accumulatorCharge = 0.0;
+
+	/** The mean tension applied to motor, in V.*/
+	double pwm = 0.0;
 	
 	/** The current position of the steering wheel.
 	 * An integer between 0 (completely to the left) 

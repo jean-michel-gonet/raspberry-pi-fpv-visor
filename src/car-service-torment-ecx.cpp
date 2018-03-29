@@ -10,7 +10,7 @@
 
 #include "car-service-torment-ecx.hpp"
 
-const int CarServiceTormentECX::REFRESH_RATE_IN_MS = 1000;
+const int CarServiceTormentECX::REFRESH_RATE_IN_MS = 100;
 
 CarServiceTormentECX::CarServiceTormentECX():
 separatedThread(nullptr),
@@ -40,26 +40,29 @@ void CarServiceTormentECX::refresh() {
 	double d;
 	int i;
 	while(!mustStop) {
-		for (int n = 0; n < 4; n++) {
+		for (int n = 0; n < 7; n++) {
 			switch(n) {
-				case 0:
-					d = i2cClient->i2cRead(22);
-					printf("speed: %f\n", d);
+				case 1:
+					d = i2cClient->i2cRead(19);
 					latestCarStatus.currentSpeed = d / 7;
 					break;
-				case 1:
+				case 3:
+					d = i2cClient->i2cRead(22);
+					d = latestCarStatus.accumulatorCharge * d / 255;
+					latestCarStatus.pwm = d;
+					break;
+				case 5:
 					d = i2cClient->i2cRead(12);
-					printf("acc: %f\n", d);
 					latestCarStatus.accumulatorCharge = d / 25;
 					break;
-				case 2:
+				case 0:
+				case 4:
 					i = i2cClient->i2cRead(17);
-					printf("steering: %d\n", i);
 					latestCarStatus.positionSteering = i;
 					break;
-				case 3:
+				case 2:
+				case 6:
 					i = i2cClient->i2cRead(16);
-					printf("move: %d\n", i);
 					latestCarStatus.positionAccelerator = i;
 					break;
 			}
