@@ -3,7 +3,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
 	CC := clang++
 else
-	CC := g++
+	CC := g++ -ggdb
 endif
 
 SRCDIR := src
@@ -26,7 +26,7 @@ else
 	CFLAGS += -std=c++14 -stdlib=libc++ -O2
 endif
 
-LIB := -pthread $(shell pkg-config gtkmm-3.0 opencv --libs) -lwiringPi
+LIB := -pthread $(shell pkg-config gtkmm-3.0 opencv --libs) 
 INC := -I include $(shell pkg-config gtkmm-3.0 opencv --cflags)
 
 $(TARGET): $(OBJECTS)
