@@ -4,20 +4,15 @@
 
 MainWindow::MainWindow():
 autoViseur(),
-probablyInFullScreen(false) {
-    set_border_width(10);
-    
+probablyInFullScreen(true) {
+	set_border_width(10);    
 	add(autoViseur);
-    autoViseur.show();
-	
+	autoViseur.show();
 	add_events(Gdk::KEY_PRESS_MASK);
+	fullscreen();
 }
 
 MainWindow::~MainWindow() {
-}
-
-void MainWindow::on_button_clicked() {
-    std::cout << "Hello World" << std::endl;
 }
 
 bool MainWindow::on_key_press_event(GdkEventKey* event) {

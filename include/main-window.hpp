@@ -10,14 +10,13 @@
 class MainWindow : public Gtk::Window {
     
 public:
-    MainWindow();
-    virtual ~MainWindow();
+	MainWindow();
+	virtual ~MainWindow();
     
 protected:
-    void on_button_clicked();
 	bool on_key_press_event(GdkEventKey* event) override;
 	bool probablyInFullScreen;
-    AutoViseur autoViseur;
+	AutoViseur autoViseur;
 };
 
 #endif
