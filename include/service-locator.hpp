@@ -9,6 +9,7 @@
 #include "car-service-torment-ecx.hpp"
 #include "image-capture-service-from-camera.hpp"
 #include "i2c-client-wiringpi.hpp"
+#include "i2c-client-mock.hpp"
 
 #ifndef service_locator_hpp
 #define service_locator_hpp
@@ -27,6 +28,6 @@ private:
 	static ServiceLocator* instance;
 	static CarServiceTormentECX* carService;
 	static ImageCaptureServiceFromCamera* imageCaptureService;
-	static I2cClientWiringPi* i2cClient;
+	static I2cClient* i2cClient;
 };
 #endif

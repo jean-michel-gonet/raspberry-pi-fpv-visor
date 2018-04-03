@@ -19,6 +19,7 @@ public:
 	virtual ~I2cClientWiringPi() = default;
 
 	virtual int i2cRead(int c) override;
+	virtual int initialize();
 private:
 	int file_i2c;
 	int length;
