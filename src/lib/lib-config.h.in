@@ -1,0 +1,5 @@
+// The version number:
+#define FPV_VERSION @FPV_VERSION@
+
+// Does the I2C device exist?
+#cmakedefine HAVE_I2C

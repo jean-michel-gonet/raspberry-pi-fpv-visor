@@ -7,3 +7,19 @@ Directory structure:
 	- include: headers, to be included from application
 	- test: tests.
 - app: The standalone executable, and classes depending directly on hardware.
+
+To build:
+
+Go to the root folder:
+cd raspberry-pi-fpv-visor
+
+Create the build folder:
+mkdir build
+cd build
+cmake ../src
+make
+
+Launch the application:
+app/fpv
+
+Enjoy!

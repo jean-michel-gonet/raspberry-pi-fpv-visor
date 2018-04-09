@@ -5,3 +5,4 @@
 *.plist
 *.swift
 bin/
+build/
