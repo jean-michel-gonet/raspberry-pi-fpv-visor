@@ -15,16 +15,24 @@ configure_file (
 )
 include_directories("${PROJECT_BINARY_DIR}")
 
-# include all includes:
-include_directories("include")
-
 # compile the library:
-add_library( fpv-lib 
-	src/car-service-torment-ecx
-	src/i2c-client-mock
-	src/i2c-client-wiringpi
-	src/image-capture-service-from-camera
-	src/service-locator )
+add_library( fpv-lib ${PROJECT_BINARY_DIR}/lib-config.h
+
+	    src/car-service-torment-ecx
+	include/car-service-torment-ecx
+
+	    src/i2c-client-mock
+	include/i2c-client-mock
+
+	    src/i2c-client-wiringpi
+	include/i2c-client-wiringpi
+
+	    src/image-capture-service-from-camera
+	include/image-capture-service-from-camera
+
+	    src/service-locator
+	include/service-locator
+)
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build

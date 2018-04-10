@@ -1,8 +1,4 @@
-*.o
-*.exe
 .DS_Store
-*.xcodeproj/
-*.plist
-*.swift
 bin/
 build/
+xcode/

@@ -12,9 +12,14 @@ find_package( OpenCV REQUIRED )
 
 # Compile files:
 add_executable(fpv 
-    main
-    main-window 
-    auto-viseur )
+    main.cpp
+
+    main-window.cpp
+    main-window.hpp
+ 
+    auto-viseur.cpp
+    auto-viseur.hpp
+ )
 
 # Link files:
 target_link_libraries(fpv
