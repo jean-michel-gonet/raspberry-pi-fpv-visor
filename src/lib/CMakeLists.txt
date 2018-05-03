@@ -2,6 +2,7 @@
 project( fpv-lib )
 
 # Find needed libraries:
+include(GoogleTest)
 find_package( OpenCV REQUIRED )
 find_package( GTest REQUIRED )
 
@@ -44,18 +45,22 @@ target_include_directories(fpv-lib PUBLIC
     PRIVATE src)
 
 # link to needed libraries
-target_link_libraries( fpv-lib ${OpenCV_LIBS} pthread gmock gtest)
+target_link_libraries( fpv-lib ${OpenCV_LIBS} pthread)
 
 # This makes the project importable from the build directory
 export(TARGETS fpv-lib FILE fpv-lib.cmake)
 
 # Builds an executable for testing:
-add_executable(fpv-lib-test test/main-test.cpp)
-gtest_add_tests(TARGET fpv-lib-test)
+add_library(catch INTERFACE)
+target_include_directories(catch INTERFACE test/catch.hpp)
+
+add_executable(fpv-lib-test 
+	test/main-test.cpp
+)
+
 target_link_libraries(fpv-lib-test 
-    fpv-lib
+	fpv-lib
 	pthread
-	gmock
-	gtest
+	catch
 )
 add_test(test fpv-lib-test)
