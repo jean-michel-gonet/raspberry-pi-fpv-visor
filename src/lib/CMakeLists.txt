@@ -3,6 +3,7 @@ project( fpv-lib )
 
 # Find needed libraries:
 find_package( OpenCV REQUIRED )
+find_package( GTest REQUIRED )
 
 # Does the I2C device exist?
 execute_process( COMMAND ls /dev/i2c-1 RESULT_VARIABLE HAVE_I2C OUTPUT_QUIET ERROR_QUIET )
@@ -43,7 +44,18 @@ target_include_directories(fpv-lib PUBLIC
     PRIVATE src)
 
 # link to needed libraries
-target_link_libraries( fpv-lib ${OpenCV_LIBS} )
+target_link_libraries( fpv-lib ${OpenCV_LIBS} pthread gmock gtest)
 
 # This makes the project importable from the build directory
 export(TARGETS fpv-lib FILE fpv-lib.cmake)
+
+# Builds an executable for testing:
+add_executable(fpv-lib-test test/main-test.cpp)
+gtest_add_tests(TARGET fpv-lib-test)
+target_link_libraries(fpv-lib-test 
+    fpv-lib
+	pthread
+	gmock
+	gtest
+)
+add_test(test fpv-lib-test)
