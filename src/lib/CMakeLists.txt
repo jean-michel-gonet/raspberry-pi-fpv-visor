@@ -28,6 +28,11 @@ add_library( fpv-lib ${PROJECT_BINARY_DIR}/lib-config.h
 
 	    src/i2c-client-wiringpi
 	include/i2c-client-wiringpi
+	include/i2c-client
+
+		src/pedestrian-detector-opencv
+	include/pedestrian-detector-opencv
+	include/pedestrian-detector
 
 	    src/image-capture-service-from-camera
 	include/image-capture-service-from-camera
@@ -39,10 +44,13 @@ add_library( fpv-lib ${PROJECT_BINARY_DIR}/lib-config.h
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
 # paths.
-target_include_directories(fpv-lib PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-    PRIVATE src)
+target_include_directories(fpv-lib 
+	PUBLIC
+    	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    	$<INSTALL_INTERFACE:include>
+    PRIVATE 
+		src
+)
 
 # link to needed libraries
 target_link_libraries( fpv-lib ${OpenCV_LIBS} pthread)
@@ -51,11 +59,22 @@ target_link_libraries( fpv-lib ${OpenCV_LIBS} pthread)
 export(TARGETS fpv-lib FILE fpv-lib.cmake)
 
 # Builds an executable for testing:
+set(PATH_TO_TEST_DATA ${PROJECT_SOURCE_DIR}/test-data)
+configure_file (
+	"${PROJECT_SOURCE_DIR}/test-config.h.in"
+	"${PROJECT_BINARY_DIR}/test-config.h"
+)
+
 add_library(catch INTERFACE)
 target_include_directories(catch INTERFACE test/catch.hpp)
 
-add_executable(fpv-lib-test 
-	test/main-test.cpp
+add_executable(fpv-lib-test
+	test/main.cpp
+	test/catch.hpp
+	${PROJECT_BINARY_DIR}/test-config.h
+	
+	test/car-service-torment-ecx-test.cpp
+	test/pedestrian-detector-opencv-test.cpp
 )
 
 target_link_libraries(fpv-lib-test 
@@ -63,4 +82,8 @@ target_link_libraries(fpv-lib-test
 	pthread
 	catch
 )
-add_test(test fpv-lib-test)
+add_test(
+	NAME fpv-lib-test 
+	COMMAND fpv-lib-test 
+	--test-data ${PROJECT_SOURCE_DIR}/test-data
+)

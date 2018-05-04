@@ -5,7 +5,7 @@
 
 
 /** A mock implementation of the I2C client.
- * To be used in environments where WiringPi won't work. */
+ * To be used in unit testing. */
 class I2cClientMock2 : public I2cClient {
 public:
 	I2cClientMock2() {
