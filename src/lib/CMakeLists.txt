@@ -70,7 +70,6 @@ target_include_directories(catch INTERFACE test/catch.hpp)
 
 add_executable(fpv-lib-test
 	test/main.cpp
-	test/catch.hpp
 	${PROJECT_BINARY_DIR}/test-config.h
 	
 	test/car-service-torment-ecx-test.cpp
@@ -82,8 +81,4 @@ target_link_libraries(fpv-lib-test
 	pthread
 	catch
 )
-add_test(
-	NAME fpv-lib-test 
-	COMMAND fpv-lib-test 
-	--test-data ${PROJECT_SOURCE_DIR}/test-data
-)
+add_test(test fpv-lib-test)

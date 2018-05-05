@@ -23,10 +23,34 @@ SCENARIO("Can detect pedestrians in an image") {
 			pedestrianDetector.processImage(mat);
 			
 			THEN ( "Then its position and size is found ") {
-				REQUIRE( pedestrianDetector.getPedestrianPosition() == 0.1 );
-				REQUIRE( pedestrianDetector.getPedestrianDistance() == 0.1 );
+				REQUIRE( pedestrianDetector.getPedestrianPosition() == -0.29);
+				REQUIRE( pedestrianDetector.getPedestrianSize() == 0.39);
 			}
 		}
 		
+		WHEN( "Shown with two pedestrians" ) {
+			string oneSinglePedestrian = string(pathToPedestrianFolder);
+			oneSinglePedestrian.append("/two-pedestrians.jpg");
+
+			mat = imread(oneSinglePedestrian, CV_LOAD_IMAGE_COLOR);
+			pedestrianDetector.processImage(mat);
+			
+			THEN( "Position and size of the largest is found" ) {
+				REQUIRE( pedestrianDetector.getPedestrianPosition() == -0.38);
+				REQUIRE( pedestrianDetector.getPedestrianSize() == 0.47f);
+			}
+		}
+		
+		WHEN( "Shown with no pedestrians" ) {
+			string oneSinglePedestrian = string(pathToPedestrianFolder);
+			oneSinglePedestrian.append("/no-pedestrians.jpg");
+			
+			mat = imread(oneSinglePedestrian, CV_LOAD_IMAGE_COLOR);
+			pedestrianDetector.processImage(mat);
+			
+			THEN( "Size of the pedestrian is 0" ) {
+				REQUIRE( pedestrianDetector.getPedestrianSize() == 0);
+			}
+		}
 	}
 }
