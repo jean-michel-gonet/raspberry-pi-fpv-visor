@@ -22,7 +22,6 @@ public:
 	virtual int initialize();
 private:
 	int file_i2c;
-	int length;
 	unsigned char buffer[60] = {0};
 };
 

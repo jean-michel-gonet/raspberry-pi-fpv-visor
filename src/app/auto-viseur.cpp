@@ -15,9 +15,9 @@
 #include "service-locator.hpp"
 
 AutoViseur::AutoViseur():
+fontDescription(),
 imageCaptureService(ServiceLocator::newImageCaptureService()),
-carService(ServiceLocator::newCarService()),
-fontDescription() {
+carService(ServiceLocator::newCarService()) {
 	fontDescription.set_family("Monospace");
 	fontDescription.set_weight(Pango::WEIGHT_BOLD);
 	fontDescription.set_size(10 * Pango::SCALE);

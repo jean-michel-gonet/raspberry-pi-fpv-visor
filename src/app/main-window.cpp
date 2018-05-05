@@ -3,8 +3,8 @@
 #include "main-window.hpp"
 
 MainWindow::MainWindow():
-autoViseur(),
-probablyInFullScreen(true) {
+probablyInFullScreen(true),
+autoViseur() {
 	set_border_width(10);    
 	add(autoViseur);
 	autoViseur.show();

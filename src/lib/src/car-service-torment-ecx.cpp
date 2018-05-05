@@ -13,9 +13,9 @@
 const int CarServiceTormentECX::REFRESH_RATE_IN_MS = 100;
 
 CarServiceTormentECX::CarServiceTormentECX():
+mustStop(false),
 separatedThread(nullptr),
-i2cClient(nullptr),
-mustStop(false)  {
+i2cClient(nullptr) {
 }
 
 CarServiceTormentECX::~CarServiceTormentECX() {

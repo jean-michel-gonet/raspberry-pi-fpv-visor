@@ -2,10 +2,10 @@
 
 
 ImageCaptureServiceFromCamera::ImageCaptureServiceFromCamera():
-videoCapture(0),
-configurationMutex(),
+mustStop(false),
 separatedThread(nullptr),
-mustStop(false) {
+configurationMutex(),
+videoCapture(0) {
 }
 
 void ImageCaptureServiceFromCamera::start() {
