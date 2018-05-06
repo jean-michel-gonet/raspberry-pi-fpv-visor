@@ -37,7 +37,7 @@ SCENARIO("Can detect pedestrians in an image") {
 			
 			THEN( "Position and size of the largest is found" ) {
 				REQUIRE( pedestrianDetector.getPedestrianPosition() == -0.38);
-				REQUIRE( pedestrianDetector.getPedestrianSize() == 0.47f);
+				REQUIRE( pedestrianDetector.getPedestrianSize() == 0.47);
 			}
 		}
 		
