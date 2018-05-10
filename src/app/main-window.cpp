@@ -24,7 +24,7 @@ bool MainWindow::on_key_press_event(GdkEventKey* event) {
 			if ((event->state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK) {
 				get_application()->quit();
 			}
-			break;
+			return true;
 			
 		// [F] toggles fullscreen mode:
 		case GDK_KEY_F:
@@ -36,15 +36,15 @@ bool MainWindow::on_key_press_event(GdkEventKey* event) {
 				fullscreen();
 				probablyInFullScreen = true;
 			}
-			break;
+			return true;
 			
 		// [esc] exits fullscreen mode:
 		case GDK_KEY_Escape:
 			unfullscreen();
 			probablyInFullScreen = false;
-			break;
+			return true;
 			
 	}
 
-	return true;
+	return false;
 }
