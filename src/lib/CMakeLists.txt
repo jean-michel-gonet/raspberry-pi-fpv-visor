@@ -39,6 +39,9 @@ add_library( fpv-lib ${PROJECT_BINARY_DIR}/lib-config.h
 
 	    src/service-locator
 	include/service-locator
+	
+		src/event-bus-service.cpp
+	include/event-bus-service.hpp
 )
 
 # Define headers for this library. PUBLIC headers are used for
@@ -74,6 +77,7 @@ add_executable(fpv-lib-test
 	
 	test/car-service-torment-ecx-test.cpp
 	test/pedestrian-detector-opencv-test.cpp
+	test/event-bus-service-test.cpp
 )
 
 target_link_libraries(fpv-lib-test 
