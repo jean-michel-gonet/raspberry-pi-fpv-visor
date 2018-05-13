@@ -40,7 +40,6 @@ add_library( fpv-lib ${PROJECT_BINARY_DIR}/lib-config.h
 	    src/service-locator
 	include/service-locator
 	
-		src/event-bus-service.cpp
 	include/event-bus-service.hpp
 )
 
