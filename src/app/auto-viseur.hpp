@@ -8,13 +8,13 @@
 
 #include "image-capture-service.hpp"
 #include "car-service.hpp"
+#include "event-bus-service.hpp"
 
-class AutoViseur : public Gtk::DrawingArea {
+class AutoViseur : public Subscriptor<ImageCapturedEvent>, public Gtk::DrawingArea {
 public:
     static const int INITIAL_WIDTH = 480;
     static const int INITIAL_HEIGHT = 320;
-
-	void notifyCapture();
+	void receive(ImageCapturedEvent imageCapturedEvent) override;
     AutoViseur();
     virtual ~AutoViseur();
     
@@ -26,6 +26,7 @@ protected:
 private:
 	int width;
 	int height;
+	EventBusService<ImageCapturedEvent> eventBusService;
 	Pango::FontDescription fontDescription;
 	ImageCaptureService* imageCaptureService;
 	CarService* carService;

@@ -18,12 +18,13 @@ AutoViseur::AutoViseur():
 fontDescription(),
 imageCaptureService(ServiceLocator::newImageCaptureService()),
 carService(ServiceLocator::newCarService()) {
+	eventBusService.subscribe(this);
+
 	fontDescription.set_family("Monospace");
 	fontDescription.set_weight(Pango::WEIGHT_BOLD);
 	fontDescription.set_size(10 * Pango::SCALE);
 	
     set_size_request(INITIAL_WIDTH, INITIAL_HEIGHT);
-	imageCaptureService->setNotificationCallback(std::bind(&AutoViseur::notifyCapture, this));
 	captureDispatcher.connect(sigc::mem_fun(*this, &AutoViseur::on_capture));
 	imageCaptureService->start();
 }
@@ -49,8 +50,8 @@ void AutoViseur::on_size_allocate (Gtk::Allocation& allocation) {
 	imageCaptureService->requestSize(width, height);
 }
 
-void AutoViseur::notifyCapture() {
-	lastCapture = imageCaptureService->getLastImage();
+void AutoViseur::receive(ImageCapturedEvent imageCapturedEvent) {
+	lastCapture = imageCapturedEvent.getCapturedImage();
 	captureDispatcher.emit();
 }
 

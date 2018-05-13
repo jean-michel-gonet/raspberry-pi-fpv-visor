@@ -9,8 +9,6 @@
 #ifndef car_service_hpp
 #define car_service_hpp
 
-#include "notifier.hpp"
-
 /** Describes the car status.*/
 class CarStatus {
 public:
@@ -38,7 +36,7 @@ public:
 
 /** Describes a class to retrieve the car status.
  */
-class CarService : public Notifier {
+class CarService {
 public:
 	virtual ~CarService() = default;
 

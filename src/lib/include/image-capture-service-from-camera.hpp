@@ -5,7 +5,10 @@
 #include <mutex>
 
 #include "image-capture-service.hpp"
+#include "event-bus-service.hpp"
 
+/** @brief A capture service specialized to retrieve images from camera.
+ */
 class ImageCaptureServiceFromCamera : public ImageCaptureService {
 public:
 	ImageCaptureServiceFromCamera();
@@ -14,7 +17,6 @@ public:
 	virtual void stop() override ;
 	virtual void requestSize(int width, int height) override;
 	virtual cv::Mat getLastImage() override;
-	virtual void setNotificationCallback(std::function<void ()> n) override;
 private:
 	bool mustStop;
 	std::thread* separatedThread;
@@ -22,8 +24,7 @@ private:
 	cv::Mat mat;
 	cv::VideoCapture videoCapture;
 	void doCapture();
-	std::function<void ()> notifyCapture;
+	EventBusService<ImageCapturedEvent> eventBus;
 };
-
 
 #endif

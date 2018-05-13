@@ -76,10 +76,6 @@ void CarServiceTormentECX::refresh() {
 	}
 }
 
-void CarServiceTormentECX::setNotificationCallback(std::function<void ()> n) {
-	notifyCapture = n;
-}
-
 CarStatus CarServiceTormentECX::getLastStatus() {
 	return latestCarStatus;
 }

@@ -23,7 +23,6 @@ public:
 	virtual ~CarServiceTormentECX();
 	
 	virtual CarStatus getLastStatus() override;
-	virtual void setNotificationCallback(std::function<void ()> n) override;
 
 	void start();
 	void stop();
@@ -34,7 +33,6 @@ private:
 	std::thread* separatedThread;
 	CarStatus latestCarStatus;
 	I2cClient *i2cClient;
-	std::function<void ()> notifyCapture;
 	void refresh();
 };
 

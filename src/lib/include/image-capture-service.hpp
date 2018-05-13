@@ -3,13 +3,23 @@
 
 #include <opencv2/highgui.hpp>
 
-#include "notifier.hpp"
+/** @brief Event when a new image is captured.
+ * Gives access to the captured image.
+ */
+class ImageCapturedEvent {
+public:
+	ImageCapturedEvent(cv::Mat i);
+	cv::Mat getCapturedImage();
+private:
+	cv::Mat capturedImage;
+};
 
 /** Interface of an Image capture service.
  * Real implementation can retrieve images from a camera or
  * a video file.
+ * Should propagate {@link ImageCapturedEvent} each time an image is captured.
  */
-class ImageCaptureService : public Notifier {
+class ImageCaptureService {
 public:
 	virtual ~ImageCaptureService() = default;
 	

@@ -1,5 +1,5 @@
 #include "image-capture-service-from-camera.hpp"
-
+#include "event-bus-service.hpp"
 
 ImageCaptureServiceFromCamera::ImageCaptureServiceFromCamera():
 mustStop(false),
@@ -28,10 +28,6 @@ void ImageCaptureServiceFromCamera::requestSize(int width, int height) {
 	videoCapture.set(CV_CAP_PROP_FRAME_WIDTH,width);
 }
 
-void ImageCaptureServiceFromCamera::setNotificationCallback(std::function<void ()> n) {
-	notifyCapture = n;
-}
-
 cv::Mat ImageCaptureServiceFromCamera::getLastImage() {
 	return mat;
 }
@@ -46,6 +42,6 @@ void ImageCaptureServiceFromCamera::doCapture() {
 			videoCapture.grab();
 			videoCapture.read(mat);
 		}
-		notifyCapture();
+		eventBus.propagate(ImageCapturedEvent(mat));
 	}
 }
