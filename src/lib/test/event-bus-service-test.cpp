@@ -11,25 +11,36 @@ public:
 	int getIdentity() {
 		return identity;
 	}
-private:
+protected:
 	int identity;
 };
 
-/** Any class can be a subscriber, as long as it
-  * has a function to receive the event. */
-class AnySubscriber {
+/** Let's have another event. */
+class OtherEvent:public AnyEvent {
 public:
-	AnySubscriber(int id) {
+	OtherEvent(int id):AnyEvent(id) {
+		// Nothing to do.
+	}
+};
+
+/** Any class can be a subscriber, as long as it
+  * implements the ability to receive events. */
+class SubscriberToAllEvents:public Subscriptor<AnyEvent>, public Subscriptor<OtherEvent> {
+public:
+	SubscriberToAllEvents(int id) {
 		identityOfLastReceivedEvent = id;
 	};
+	void receive(AnyEvent event) override {
+		identityOfLastReceivedEvent = event.getIdentity();
+	}
+	void receive(OtherEvent event) override {
+		identityOfLastReceivedEvent = event.getIdentity();
+	}
 	int getIdentityOfLastReceivedEvent() {
 		return identityOfLastReceivedEvent;
 	}
 	void setIdentityOfLastReceivedEvent(int id) {
 		identityOfLastReceivedEvent = id;
-	}
-	void receiveNotification(AnyEvent event) {
-		identityOfLastReceivedEvent = event.getIdentity();
 	}
 private:
 	int identityOfLastReceivedEvent;
@@ -38,21 +49,73 @@ private:
 using namespace std::placeholders;
 using namespace std;
 
-SCENARIO("A bus service can broadcast any event to all subscribers") {
+SCENARIO("The Event Bus Service broadcasts to all subscribers of this event") {
 	EventBusService<AnyEvent> eventBus;
 
 	GIVEN( "Two classes subscribed to the same event") {
-		AnySubscriber subscriber1(10), subscriber2(20);
-		function<void (AnyEvent)> s1 = bind(&AnySubscriber::receiveNotification, subscriber1, _1);
-		eventBus.subscribe(s1);
-		eventBus.subscribe(bind(&AnySubscriber::receiveNotification, subscriber2, _1));
-		subscriber1.setIdentityOfLastReceivedEvent(30);
-		subscriber2.setIdentityOfLastReceivedEvent(40);
+		SubscriberToAllEvents subscriber1(10), subscriber2(20);
+		eventBus.subscribe(&subscriber1);
+		eventBus.subscribe(&subscriber2);
+
 		WHEN( "When the event is fired") {
 			eventBus.propagate(AnyEvent(1));
 			THEN ( "All subscriptors are informed ") {
 				REQUIRE( subscriber1.getIdentityOfLastReceivedEvent() == 1);
+				REQUIRE( subscriber2.getIdentityOfLastReceivedEvent() == 1);
 			}
-		}		
+		}
+		
+		WHEN( "One class unsubscribes") {
+			eventBus.unsubscribe(&subscriber2);
+			
+			THEN ("It doesn't receive events any more") {
+				eventBus.propagate(AnyEvent(2));
+				REQUIRE( subscriber1.getIdentityOfLastReceivedEvent() == 2);
+				REQUIRE( subscriber2.getIdentityOfLastReceivedEvent() == 20);
+			}
+		}
+	}
+}
+
+
+SCENARIO("The Event Bus Service broatcasts only to subscribers of this event") {
+	EventBusService<AnyEvent> eventBus1;
+	EventBusService<OtherEvent> eventBus2;
+	
+	GIVEN( "Two classes subscribed to different event") {
+		SubscriberToAllEvents subscriber1(10), subscriber2(20);
+		eventBus1.subscribe(&subscriber1);
+		eventBus2.subscribe(&subscriber2);
+		
+		WHEN( "When the event is fired") {
+			eventBus1.propagate(AnyEvent(1));
+			eventBus2.propagate(OtherEvent(2));
+
+			THEN ( "Only subscribers to specific event are informed ") {
+				REQUIRE( subscriber1.getIdentityOfLastReceivedEvent() == 1);
+				REQUIRE( subscriber2.getIdentityOfLastReceivedEvent() == 2);
+			}
+		}
+	}
+}
+
+SCENARIO("The Event Bus Service is a singleton") {
+	EventBusService<AnyEvent> eventBus1;
+	EventBusService<AnyEvent> eventBus2;
+	
+	GIVEN( "Two classes subscribed to same event in different event bus") {
+		SubscriberToAllEvents subscriber1(10), subscriber2(20);
+		eventBus1.subscribe(&subscriber1);
+		eventBus2.subscribe(&subscriber2);
+		
+		WHEN( "When the event is fired") {
+			eventBus1.propagate(AnyEvent(1));
+			eventBus2.propagate(OtherEvent(2));
+			
+			THEN ( "All subscriptors are informed") {
+				REQUIRE( subscriber1.getIdentityOfLastReceivedEvent() == 1);
+				REQUIRE( subscriber2.getIdentityOfLastReceivedEvent() == 2);
+			}
+		}
 	}
 }
