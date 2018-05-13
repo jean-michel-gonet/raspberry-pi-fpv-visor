@@ -54,6 +54,7 @@ SCENARIO("The Event Bus Service broadcasts to all subscribers of this event") {
 
 	GIVEN( "Two classes subscribed to the same event") {
 		SubscriberToAllEvents subscriber1(10), subscriber2(20);
+		eventBus.clear();
 		eventBus.subscribe(&subscriber1);
 		eventBus.subscribe(&subscriber2);
 
@@ -83,6 +84,8 @@ SCENARIO("The Event Bus Service broatcasts only to subscribers of this event") {
 	EventBusService<OtherEvent> eventBus2;
 	
 	GIVEN( "Two classes subscribed to different event") {
+		eventBus1.clear();
+		eventBus2.clear();
 		SubscriberToAllEvents subscriber1(10), subscriber2(20);
 		eventBus1.subscribe(&subscriber1);
 		eventBus2.subscribe(&subscriber2);
@@ -103,18 +106,19 @@ SCENARIO("The Event Bus Service is a singleton") {
 	EventBusService<AnyEvent> eventBus1;
 	EventBusService<AnyEvent> eventBus2;
 	
-	GIVEN( "Two classes subscribed to same event in different event bus") {
+	GIVEN( "Two classes subscribed to same event using different instances of same event bus") {
+		eventBus1.clear();
+		eventBus2.clear();
 		SubscriberToAllEvents subscriber1(10), subscriber2(20);
 		eventBus1.subscribe(&subscriber1);
 		eventBus2.subscribe(&subscriber2);
 		
 		WHEN( "When the event is fired") {
 			eventBus1.propagate(AnyEvent(1));
-			eventBus2.propagate(OtherEvent(2));
 			
 			THEN ( "All subscriptors are informed") {
 				REQUIRE( subscriber1.getIdentityOfLastReceivedEvent() == 1);
-				REQUIRE( subscriber2.getIdentityOfLastReceivedEvent() == 2);
+				REQUIRE( subscriber2.getIdentityOfLastReceivedEvent() == 1);
 			}
 		}
 	}

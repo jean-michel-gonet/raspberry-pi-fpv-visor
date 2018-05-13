@@ -50,17 +50,21 @@ vector<Subscriptor<T> *> SubscriptorsHolder<T>::subscriptors;
 template <class T>
 class EventBusService {
 public:
-	EventBusService() {
-		vector<Subscriptor<T> *> subscriptors = SubscriptorsHolder<T>::subscriptors;
-	};
 	virtual ~EventBusService() = default;
 	
+	/** @brief empties the list of subscribers.
+	 * You should not use this outside unit testing.
+	 */
+	virtual void clear() {
+		SubscriptorsHolder<T>::subscriptors.clear();
+	}
+	 
 	/** @brief Propagates the event to all subscriptors.
 	 * @param event The event.
 	 */
 	virtual void propagate(T event) {
-		for (int i = 0; i < subscriptors.size(); i++) {
-			Subscriptor<T> *subscriptor = subscriptors[i];
+		for (int i = 0; i < SubscriptorsHolder<T>::subscriptors.size(); i++) {
+			Subscriptor<T> *subscriptor = SubscriptorsHolder<T>::subscriptors[i];
 			subscriptor->receive(event);
 		}
 	};
@@ -69,17 +73,15 @@ public:
 	 * @param subscriptor A pointer to an instance able to receive events.
 	 */
 	virtual void subscribe(Subscriptor<T> *subscriptor) {
-		subscriptors.push_back(subscriptor);
+		SubscriptorsHolder<T>::subscriptors.push_back(subscriptor);
 	};
 
 	/** @brief Unsubscribes the specified subscriptor.
 	 * @param subscriptor A pointer to the subscriptor.
 	 */
 	virtual void unsubscribe(Subscriptor<T> *subscriptor) {
-		subscriptors.erase(remove(subscriptors.begin(), subscriptors.end(), subscriptor), subscriptors.end());
+		SubscriptorsHolder<T>::subscriptors.erase(remove(SubscriptorsHolder<T>::subscriptors.begin(), SubscriptorsHolder<T>::subscriptors.end(), subscriptor), SubscriptorsHolder<T>::subscriptors.end());
 	}
-private:
-	vector<Subscriptor<T> *> subscriptors;
 };
 
 #endif
