@@ -2,9 +2,7 @@
 project( fpv-lib )
 
 # Find needed libraries:
-include(GoogleTest)
 find_package( OpenCV REQUIRED )
-find_package( GTest REQUIRED )
 
 # Does the I2C device exist?
 execute_process( COMMAND ls /dev/i2c-1 RESULT_VARIABLE HAVE_I2C OUTPUT_QUIET ERROR_QUIET )
