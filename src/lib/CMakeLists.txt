@@ -34,6 +34,10 @@ add_library( fpv-lib ${PROJECT_BINARY_DIR}/lib-config.h
 	include/pedestrian-detector-opencv
 	include/pedestrian-detector
 
+		src/video-stream-writer-impl
+	include/video-stream-writer-impl
+	include/video-stream-writer
+
 	    src/image-capture-service
 	include/image-capture-service
 

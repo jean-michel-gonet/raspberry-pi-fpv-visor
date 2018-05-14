@@ -6,13 +6,13 @@
 //  Copyright © 2018 Jean-Michel Gonet. All rights reserved.
 //
 
+#ifndef service_locator_hpp
+#define service_locator_hpp
+
 #include "car-service-torment-ecx.hpp"
 #include "image-capture-service-from-camera.hpp"
 #include "i2c-client-wiringpi.hpp"
 #include "i2c-client-mock.hpp"
-
-#ifndef service_locator_hpp
-#define service_locator_hpp
 
 class ServiceLocator {
 public:
