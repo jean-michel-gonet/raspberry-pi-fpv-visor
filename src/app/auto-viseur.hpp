@@ -10,11 +10,27 @@
 #include "car-service.hpp"
 #include "event-bus-service.hpp"
 
-class AutoViseur : public Subscriptor<ImageCapturedEvent>, public Gtk::DrawingArea {
+class MakeVideoStreamEvent {
+public:
+	MakeVideoStreamEvent(bool doIt) {
+		this->doIt = doIt;
+	}
+	bool getDoIt() {
+		return doIt;
+	}
+private:
+	bool doIt;
+};
+
+class AutoViseur :
+public Subscriptor<ImageCapturedEvent>,
+public Subscriptor<MakeVideoStreamEvent>,
+public Gtk::DrawingArea {
 public:
     static const int INITIAL_WIDTH = 480;
     static const int INITIAL_HEIGHT = 320;
 	void receive(ImageCapturedEvent imageCapturedEvent) override;
+	void receive(MakeVideoStreamEvent makeVideoStreamEvent) override;
     AutoViseur();
     virtual ~AutoViseur();
     
@@ -26,13 +42,16 @@ protected:
 private:
 	int width;
 	int height;
-	EventBusService<ImageCapturedEvent> eventBusService;
+	EventBusService<ImageCapturedEvent> imageCapturedBus;
+	EventBusService<MakeVideoStreamEvent> makeVideoStreamBus;
+	bool makingVideoStream;
 	Pango::FontDescription fontDescription;
 	ImageCaptureService* imageCaptureService;
 	CarService* carService;
 	cv::Mat lastCapture;
 	Glib::Dispatcher captureDispatcher;
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
+	void displayRec(const Cairo::RefPtr<Cairo::Context>& cr);
 	void displayTextTopLeft(const Cairo::RefPtr<Cairo::Context>& cr, char *text);
 	void displayTextBottomLeft(const Cairo::RefPtr<Cairo::Context>& cr, char *text);
 	void displayTextTopRight(const Cairo::RefPtr<Cairo::Context>& cr, char *text);

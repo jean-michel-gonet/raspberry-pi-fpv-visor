@@ -4,6 +4,7 @@
 
 MainWindow::MainWindow():
 probablyInFullScreen(true),
+makingVideoStream(false),
 autoViseur() {
 	set_border_width(10);    
 	add(autoViseur);
@@ -36,6 +37,12 @@ bool MainWindow::on_key_press_event(GdkEventKey* event) {
 				fullscreen();
 				probablyInFullScreen = true;
 			}
+			return true;
+		// [S] toggles saving / not saving video stream:
+		case GDK_KEY_S:
+		case GDK_KEY_s:
+			makingVideoStream = !makingVideoStream;
+			makeVideoStreamBus.propagate(makingVideoStream);
 			return true;
 			
 		// [esc] exits fullscreen mode:

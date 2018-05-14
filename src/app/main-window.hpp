@@ -16,7 +16,9 @@ public:
 protected:
 	bool on_key_press_event(GdkEventKey* event) override;
 	bool probablyInFullScreen;
+	bool makingVideoStream;
 	AutoViseur autoViseur;
+	EventBusService<MakeVideoStreamEvent> makeVideoStreamBus;
 };
 
 #endif

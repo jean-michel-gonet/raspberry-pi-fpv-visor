@@ -14,22 +14,29 @@
 #include "auto-viseur.hpp"
 #include "service-locator.hpp"
 
+
+
 AutoViseur::AutoViseur():
+makingVideoStream(false),
 fontDescription(),
 imageCaptureService(ServiceLocator::newImageCaptureService()),
 carService(ServiceLocator::newCarService()) {
-	eventBusService.subscribe(this);
-
 	fontDescription.set_family("Monospace");
 	fontDescription.set_weight(Pango::WEIGHT_BOLD);
 	fontDescription.set_size(10 * Pango::SCALE);
 	
     set_size_request(INITIAL_WIDTH, INITIAL_HEIGHT);
+
+	imageCapturedBus.subscribe(this);
+	makeVideoStreamBus.subscribe(this);
+	
 	captureDispatcher.connect(sigc::mem_fun(*this, &AutoViseur::on_capture));
 	imageCaptureService->start();
 }
 
 AutoViseur::~AutoViseur() {
+	imageCapturedBus.unsubscribe(this);
+	makeVideoStreamBus.unsubscribe(this);
 	imageCaptureService->stop();
 }
 
@@ -48,6 +55,16 @@ void AutoViseur::on_size_allocate (Gtk::Allocation& allocation) {
 	// The viewport doesn't resize to all precise values; it
 	// simplifies to the nearest power of 2.
 	imageCaptureService->requestSize(width, height);
+}
+/**
+ * Switches on/off the making of video stream with captured images.
+ */
+void AutoViseur::receive(MakeVideoStreamEvent event) {
+	if (event.getDoIt()) {
+		makingVideoStream = true;
+	} else {
+		makingVideoStream = false;
+	}
 }
 
 void AutoViseur::receive(ImageCapturedEvent imageCapturedEvent) {
@@ -72,6 +89,7 @@ void AutoViseur::on_capture() {
  */
 bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 	if (!lastCapture.empty()) {
+		// If requested, saves the image to a video stream:
 		
 		// Resizes the captured image to the allocation:
 		cv::Mat mat;
@@ -108,10 +126,23 @@ bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 		displayTextTopRight(cr, buffer);
 		
 		displayCross(cr, carStatus.positionSteering, carStatus.positionAccelerator);
+		
+		if (makingVideoStream) {
+			cr->set_source_rgb(1.0, 0.1, 0.1);
+			displayRec(cr);
+		}
 	}
 	
 	// Call me next time.
 	return true;
+}
+
+void AutoViseur::displayRec(const Cairo::RefPtr<Cairo::Context>& cr) {
+	double radius = 7;
+	double x = width / 2;
+	double y = height - radius;
+	cr->arc(x, y, radius, 0, 2 * M_PI);
+	cr->fill();
 }
 
 void AutoViseur::displayCross(const Cairo::RefPtr<Cairo::Context>& cr, int x, int y) {
