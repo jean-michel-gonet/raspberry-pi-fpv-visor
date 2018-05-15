@@ -13,6 +13,7 @@
 #include "image-capture-service-from-camera.hpp"
 #include "i2c-client-wiringpi.hpp"
 #include "i2c-client-mock.hpp"
+#include "video-stream-writer-impl.hpp"
 
 class ServiceLocator {
 public:
@@ -20,6 +21,7 @@ public:
 	static CarService* newCarService();
 	static ImageCaptureService* newImageCaptureService();
 	static I2cClient* newI2cClient();
+	static VideoStreamWriter* newVideoStreamWriter();
 	
 	ServiceLocator();
 	virtual ~ServiceLocator() = default;
@@ -29,5 +31,6 @@ private:
 	static CarServiceTormentECX* carService;
 	static ImageCaptureServiceFromCamera* imageCaptureService;
 	static I2cClient* i2cClient;
+	static VideoStreamWriterImpl* videoStreamWriter;
 };
 #endif

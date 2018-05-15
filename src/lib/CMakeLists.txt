@@ -79,9 +79,10 @@ add_executable(fpv-lib-test
 	test/main.cpp
 	${PROJECT_BINARY_DIR}/test-config.h
 	
-	test/car-service-torment-ecx-test.cpp
-	test/pedestrian-detector-opencv-test.cpp
-	test/event-bus-service-test.cpp
+	test/car-service-torment-ecx-test
+	test/pedestrian-detector-opencv-test
+	test/video-stream-writer-impl-test
+	test/event-bus-service-test
 )
 
 target_link_libraries(fpv-lib-test 

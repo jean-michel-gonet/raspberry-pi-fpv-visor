@@ -21,7 +21,7 @@ void PedestrianDetectorOpenCv::processImage(Mat image) {
 	computePedestrianSize(image.size(), pedestrianRectangle);
 	computePedestrianPosition(image.size(), pedestrianRectangle);
 
-	// displayDebugInformation(foundLocations, foundWeights, pedestrianRectangle, image);
+	displayDebugInformation(foundLocations, foundWeights, pedestrianRectangle, image);
 }
 
 void PedestrianDetectorOpenCv::displayDebugInformation(vector<Rect> foundPedestrians, vector<double> weights, Rect largestPedestrian, Mat image) {

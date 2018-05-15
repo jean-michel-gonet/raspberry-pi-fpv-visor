@@ -19,6 +19,7 @@
 AutoViseur::AutoViseur():
 makingVideoStream(false),
 fontDescription(),
+videoStreamWriter(nullptr),
 imageCaptureService(ServiceLocator::newImageCaptureService()),
 carService(ServiceLocator::newCarService()) {
 	fontDescription.set_family("Monospace");
@@ -89,7 +90,16 @@ void AutoViseur::on_capture() {
  */
 bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 	if (!lastCapture.empty()) {
+
 		// If requested, saves the image to a video stream:
+		if (makingVideoStream) {
+			if (videoStreamWriter == nullptr) {
+				videoStreamWriter = ServiceLocator::newVideoStreamWriter();
+				videoStreamWriter->openStream(lastCapture);
+			} else {
+				videoStreamWriter->addImage(lastCapture);
+			}
+		}
 		
 		// Resizes the captured image to the allocation:
 		cv::Mat mat;

@@ -16,6 +16,8 @@ ImageCaptureServiceFromCamera* ServiceLocator::imageCaptureService = nullptr;
 
 I2cClient* ServiceLocator::i2cClient = nullptr;
 
+VideoStreamWriterImpl* ServiceLocator::videoStreamWriter;
+
 ServiceLocator::ServiceLocator() {
 	// Nothing to do.
 }
@@ -54,4 +56,11 @@ I2cClient* ServiceLocator::newI2cClient() {
 		};
 	}
 	return i2cClient;
+}
+
+VideoStreamWriter* ServiceLocator::newVideoStreamWriter() {
+	if (videoStreamWriter == nullptr) {
+		videoStreamWriter = new VideoStreamWriterImpl();
+	}
+	return videoStreamWriter;
 }

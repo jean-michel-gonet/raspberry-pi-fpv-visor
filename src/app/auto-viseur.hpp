@@ -9,6 +9,7 @@
 #include "image-capture-service.hpp"
 #include "car-service.hpp"
 #include "event-bus-service.hpp"
+#include "video-stream-writer.hpp"
 
 class MakeVideoStreamEvent {
 public:
@@ -48,6 +49,7 @@ private:
 	Pango::FontDescription fontDescription;
 	ImageCaptureService* imageCaptureService;
 	CarService* carService;
+	VideoStreamWriter* videoStreamWriter;
 	cv::Mat lastCapture;
 	Glib::Dispatcher captureDispatcher;
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
