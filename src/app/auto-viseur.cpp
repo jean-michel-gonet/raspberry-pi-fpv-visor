@@ -19,9 +19,9 @@
 AutoViseur::AutoViseur():
 makingVideoStream(false),
 fontDescription(),
-videoStreamWriter(nullptr),
 imageCaptureService(ServiceLocator::newImageCaptureService()),
-carService(ServiceLocator::newCarService()) {
+carService(ServiceLocator::newCarService()),
+videoStreamWriter(nullptr) {
 	fps = 25.0;
 	
 	fontDescription.set_family("Monospace");
