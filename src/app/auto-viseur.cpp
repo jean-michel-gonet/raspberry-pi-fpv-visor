@@ -22,6 +22,8 @@ fontDescription(),
 videoStreamWriter(nullptr),
 imageCaptureService(ServiceLocator::newImageCaptureService()),
 carService(ServiceLocator::newCarService()) {
+	fps = 25.0;
+	
 	fontDescription.set_family("Monospace");
 	fontDescription.set_weight(Pango::WEIGHT_BOLD);
 	fontDescription.set_size(10 * Pango::SCALE);
@@ -91,11 +93,17 @@ void AutoViseur::on_capture() {
 bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 	if (!lastCapture.empty()) {
 
+		// Measures the frame rate:
+		std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+		std::chrono::duration<float> difference = now - timeOfLastFrame;
+		fps = 1 / difference.count();
+		timeOfLastFrame = now;
+
 		// If requested, saves the image to a video stream:
 		if (makingVideoStream) {
 			if (videoStreamWriter == nullptr) {
 				videoStreamWriter = ServiceLocator::newVideoStreamWriter();
-				videoStreamWriter->openStream(lastCapture);
+				videoStreamWriter->openStream(lastCapture, fps);
 			} else {
 				videoStreamWriter->addImage(lastCapture);
 			}
@@ -129,7 +137,7 @@ bool AutoViseur::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 		sprintf(buffer, "%.1f km/h", carStatus.currentSpeed);
 		displayTextTopLeft(cr, buffer);
 
-		sprintf(buffer, "%.1f V", carStatus.accumulatorCharge);
+		sprintf(buffer, "%.1f V - %.1f fps", carStatus.accumulatorCharge, fps);
 		displayTextBottomLeft(cr, buffer);
 
 		sprintf(buffer, "PWM %.1f V", carStatus.pwm);

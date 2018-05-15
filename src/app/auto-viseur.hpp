@@ -51,6 +51,8 @@ private:
 	CarService* carService;
 	VideoStreamWriter* videoStreamWriter;
 	cv::Mat lastCapture;
+	double fps;
+	std::chrono::time_point<std::chrono::system_clock> timeOfLastFrame;
 	Glib::Dispatcher captureDispatcher;
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
 	void displayRec(const Cairo::RefPtr<Cairo::Context>& cr);
