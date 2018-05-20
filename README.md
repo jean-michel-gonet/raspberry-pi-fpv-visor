@@ -51,7 +51,7 @@ following snippet at the bottom:
 
 ```bash
 bcm2835-v4l2
-``
+```
 
 ## Activate I2C interface
 Why? Currently, this project connects to https://github.com/jean-michel-gonet/pic18f-bldc-controller.X using
