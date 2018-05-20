@@ -169,12 +169,16 @@ cd opencv-3.4.1
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
-make
+make -j3
 ```
 
-Go for a walk; this takes ages.
+Go for a walk; this takes ages. If process breaks, you can launch again just retyping:
 
-When you're back, complete the installation:
+```
+make -j3
+```
+
+When compilation is done, complete the installation:
 
 ```bash
 sudo make install
@@ -185,6 +189,15 @@ To check if the library is available as a dependency:
 
 ```bash
 pkg-config --list-all | grep opencv
+```
+
+You can now delete the sources folder; you don't need it any more:
+
+```bash
+cd ..
+cd ..
+rm -rf opencv-3.4.1
+rm 3.4.1.zip
 ```
 
 ## gtk
@@ -203,22 +216,39 @@ pkg-config --list-all | grep gtkmm
 
 # Install the project
 
-## Compile
+## Compile and test
 
-
-Go to the root folder:
+```bash
+git clone https://github.com/jean-michel-gonet/raspberry-pi-fpv-visor.git
 cd raspberry-pi-fpv-visor
-
-Create the build folder:
 mkdir build
 cd build
-cmake ../src
+cmake ../src/
 make
+```
 
-Launch the application:
-app/fpv
+To execute the tests (assuming you're still in the ``build`` folder):
 
-## Run
+```bash
+./lib/fpv-lib-test
+```
+
+The more traditional ``make test`` works also, but it doesn't show as much information.
+
+## Execute
+You need to be in X environment, as the application is graphical.
+
+To launch application, (assuming you're still in the ``build`` folder):
+
+
+```bash
+./app/fpv
+```
+
+Application starts full-screen:
+- [f] To toggle full-screen
+- [Ctrl] + [C] to exit
+- [s] To toggle video saving. Video is called ``live.avi`` and saved in your current user folder. 
 
 ## Install as Autorun
 
