@@ -1,5 +1,5 @@
 # raspberry-pi-fpv-visor
-A simple FPV visor that captures the raspberry's camera input and displays it in full screen, with some OSD data
+A simple FPV visor that captures the raspberry's camera input and displays it in full screen, with some OSD data.
 
 Directory structure:
 - lib: All complex functionality resides here. All implementation have unit testing
@@ -10,16 +10,10 @@ Directory structure:
 
 # Prepare hardware
 
-I assume that you have a newly installed _Raspberry PI_. This is what you need:
+I assume that you have a newly installed _Raspberry PI_. This is what you need to do:
 - Activate the camera
 - Activate I2C bus
-- Install openCV
-- Install gtk
-- Install git
-- Install cmake
-- Download and compile
-- Auto-run it at boot
-- Deactivate the idle screen
+- Enable V4L2
 
 ## Activate camera
 Why? This is pretty obvious: you need a camera to perform the _View_ part of _First Person View_
@@ -88,6 +82,8 @@ $ i2cdetect -y 1
 
 # Prepare tooling
 As the project is distributed as compilable sources, you need some development tooling.
+- Install git
+- Install cmake
 
 ## Install git
 Why? Because it is the easiest way to download all sources in a consistent and predictable manner, and to keep up
@@ -121,6 +117,10 @@ You need to have a version higher than 3.1
 
 
 # Prepare dependencies
+As I am not a Robinson on my island, I depend on the work of others:
+- Install pkg-config
+- Install opencv
+- Install gtk (needs to be Gtk3)
 
 ## pkg-config
 Why? Because it is a common tool to handle dependencies between projects, and cmake uses it.
@@ -148,7 +148,7 @@ Why? Because this project, as many others, use it to process images.
 
 ```bash
 sudo apt-get install build-essential # compiler
-sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev # required
+sudo apt-get install cmake git libgtk-3-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev # required
 sudo apt-get install python-dev python-numpy libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev # optional
 ```
 
@@ -169,7 +169,7 @@ cd opencv-3.4.1
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
-make -j3
+make -j4
 ```
 
 Go for a walk; this takes ages. If process breaks, you can launch again just retyping:
@@ -200,7 +200,7 @@ rm -rf opencv-3.4.1
 rm 3.4.1.zip
 ```
 
-## gtk
+## gtk for c++
 Why? Because GTK is a widely used library to make GUIs, and is cross platform. This project uses it for having a user
 interface that works in Raspberry, but also in Windows and Mac, so you can test the application from your computer.
 
@@ -215,6 +215,13 @@ pkg-config --list-all | grep gtkmm
 ```
 
 # Install the project
+
+You've got all pre-conditions and dependencies, now its time to:
+- Compile and test.
+- Execute it.
+- Autorun.
+- Avoid console blanking.
+- Avoid screen blanking.
 
 ## Compile and test
 
@@ -250,6 +257,93 @@ Application starts full-screen:
 - [Ctrl] + [C] to exit
 - [s] To toggle video saving. Video is called ``live.avi`` and saved in your current user folder. 
 
-## Install as Autorun
+## Autorun
+Easiest way I found to auto-run a GUI application in Raspberry is to create a desktop file in the autostart directory.
+
+```bash
+mkdir ~/.config/autostart
+vim ~/.config/autostart/fpv.desktop
+```
+
+The content of ``fpv.desktop`` should be similar to:
+
+```config
+[Desktop Entry]
+Name=raspberry-pi-fpv-visor
+Exec=/User/app/fpv
+Type=application
+```
+
+See original explanation here: https://www.raspberrypi.org/forums/viewtopic.php?t=18968
+
+
+## Avoid console blanking
+Console blanking affects you if you're using ssh to execute commands. If, for some time, you don't type anything
+in the console, it will close.
+
+To avoid it, edit file ``/boot/cmdline.txt`` and append the paramter ``consoleblank=0``
+
+
+See original explanation here: https://www.raspberrypi.org/documentation/configuration/screensaver.md
 
 ## Avoid idle screen
+A FPV application will typically have no user interaction, so screen may go idle leaving you in the dark. To prevent this, 
+simplest approach is to install a screen saver and then configure it to NOT run:
+
+```bash
+sudo apt-get install xscreensaver
+```
+
+After this, screensaver application is in _Preferences_, in desktop menu. 
+Use the appropriate options to prevent screen saver.
+
+# Troubleshooting
+I hope you don't need this section.
+
+## Gtk-ERROR **: GTK+ 2.x symbols detected. 
+If you get this error message:
+
+```
+Gtk-ERROR **: GTK+ 2.x symbols detected. Using GTK+ 2.x and GTK+ 3 in the same process is not supported
+```
+
+You may accidentally linked opencv with Gtk2. As this project uses Gtk3, there is a conflict.
+
+You need to be sure that opencv is linked with:
+
+- Uninstall Gtk2
+```bash
+sudo apt-get remove libgtk2.0-dev
+sudo apt-get install libgtk-3-dev
+sudo apt-get auto-remove
+sudo apt-get install libgtkmm-3.0-dev
+```
+- Remove the build directory of opencv (yes, you need to rebuild, sorry).
+- Start again, BUT...
+- Before launching ``make``, check the ``cmake`` log, and verify the Gtk version is linked with. Look for 
+something like this:
+
+```
+...
+--   GUI: 
+--     GTK+:                        YES (ver 3.22.11)
+--       GThread :                  YES (ver 2.50.3)
+--       GtkGlExt:                  NO
+--     VTK support:                 NO
+...
+```
+
+## Debug
+Sometimes you need to debug using Raspberry environment. In that case you need to compile with debug symbols, 
+and then you use ``gdb`` to run application:
+
+```bash
+cd raspberry-pi-fpv-visor
+mkdir debug
+cd debug
+cmake -DCMAKE_BUILD_TYPE=Debug ../src/
+make -j4
+gdb ./app/fpv
+```
+
+See more about using it: http://apoorvaj.io/hitchhikers-guide-to-the-gdb.html
