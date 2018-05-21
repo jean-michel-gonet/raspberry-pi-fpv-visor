@@ -21,13 +21,13 @@ void PedestrianDetectorOpenCv::processImage(Mat image) {
 	computePedestrianSize(image.size(), pedestrianRectangle);
 	computePedestrianPosition(image.size(), pedestrianRectangle);
 
-	displayDebugInformation(foundLocations, foundWeights, pedestrianRectangle, image);
+	// displayDebugInformation(foundLocations, foundWeights, pedestrianRectangle, image);
 }
 
 void PedestrianDetectorOpenCv::displayDebugInformation(vector<Rect> foundPedestrians, vector<double> weights, Rect largestPedestrian, Mat image) {
 	
 	vector<Rect>::iterator i;
-	for (int i = 0; i < foundPedestrians.size(); i++) {
+	for (unsigned int i = 0; i < foundPedestrians.size(); i++) {
 		if (weights[i] > WEIGHT_DETECTION_THRESHOLD) {
 			Rect foundPedestrian = foundPedestrians[i];
 			rectangle(image,
@@ -50,7 +50,7 @@ Rect PedestrianDetectorOpenCv::findLargestRectangle(vector<Rect> foundLocations,
 	
 	Rect largestRectangle = Rect(0, 0, 0, 0);
 	
-	for (int i = 0; i < foundLocations.size(); i++) {
+	for (unsigned int i = 0; i < foundLocations.size(); i++) {
 		if (weights[i] > WEIGHT_DETECTION_THRESHOLD) {
 			Rect foundLocation = foundLocations[i];
 			if (foundLocation.area() > largestRectangle.area()) {

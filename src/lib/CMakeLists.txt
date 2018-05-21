@@ -72,13 +72,11 @@ configure_file (
 	"${PROJECT_BINARY_DIR}/test-config.h"
 )
 
-add_library(catch INTERFACE)
-target_include_directories(catch INTERFACE test/catch.hpp)
-
 add_executable(fpv-lib-test
 	test/main.cpp
 	${PROJECT_BINARY_DIR}/test-config.h
-	
+	test/catch.hpp	
+
 	test/car-service-torment-ecx-test
 	test/pedestrian-detector-opencv-test
 	test/video-stream-writer-impl-test
@@ -88,6 +86,5 @@ add_executable(fpv-lib-test
 target_link_libraries(fpv-lib-test 
 	fpv-lib
 	pthread
-	catch
 )
 add_test(test fpv-lib-test)

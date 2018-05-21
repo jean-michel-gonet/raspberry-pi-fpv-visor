@@ -63,7 +63,7 @@ public:
 	 * @param event The event.
 	 */
 	virtual void propagate(T event) {
-		for (int i = 0; i < SubscriptorsHolder<T>::subscriptors.size(); i++) {
+		for (unsigned int i = 0; i < SubscriptorsHolder<T>::subscriptors.size(); i++) {
 			Subscriptor<T> *subscriptor = SubscriptorsHolder<T>::subscriptors[i];
 			subscriptor->receive(event);
 		}
