@@ -115,7 +115,6 @@ cmake --version
 
 You need to have a version higher than 3.1
 
-
 # Prepare dependencies
 As I am not a Robinson on my island, I depend on the work of others:
 - Install pkg-config
@@ -270,12 +269,14 @@ The content of ``fpv.desktop`` should be similar to:
 ```config
 [Desktop Entry]
 Name=raspberry-pi-fpv-visor
-Exec=/User/app/fpv
+Exec=/home/pi/raspberry-pi-fpv-visor/build/app/fpv
+Path=/home/pi
 Type=application
 ```
 
-See original explanation here: https://www.raspberrypi.org/forums/viewtopic.php?t=18968
-
+The ``Path`` key is where the application will save videos.
+- See more about syntax here: https://specifications.freedesktop.org/desktop-entry-spec/latest/ar01s06.html
+- See original explanation here: https://www.raspberrypi.org/forums/viewtopic.php?t=18968
 
 ## Avoid console blanking
 Console blanking affects you if you're using ssh to execute commands. If, for some time, you don't type anything
@@ -296,6 +297,34 @@ sudo apt-get install xscreensaver
 
 After this, screensaver application is in _Preferences_, in desktop menu. 
 Use the appropriate options to prevent screen saver.
+
+## Enabling composite video out
+
+If you're using a FPV transmitter, you probably want to
+
+```bash
+sudo vim /boot/config.txt
+```
+
+And then add:
+```config
+...
+sdtv_mode=2
+...
+hdmi_force_hotplug=0
+...
+```
+
+When hdmi_force_hotplug is set to 1, system assumes that there is a HDMI device present, so
+it never activates video composite output.
+
+When hdmi_force_hotplug is set to 0, system will use composite video unless it detects HDMI device. So,
+Raspberry will still use the HDMI monitor if it is connected at boot sequence.
+
+See more about this:
+- Original article: https://bhavyanshu.me/tutorials/force-raspberry-pi-output-to-composite-video-instead-of-hdmi/03/03/2014
+- Official doc: https://www.raspberrypi.org/documentation/configuration/config-txt/video.md
+- More official: https://www.raspberrypi.org/documentation/configuration/config-txt/README.md
 
 # Troubleshooting
 I hope you don't need this section.
