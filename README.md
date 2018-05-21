@@ -146,8 +146,7 @@ sudo apt-get install pkg-config
 Why? Because this project, as many others, use it to process images.
 
 ```bash
-sudo apt-get install build-essential # compiler
-sudo apt-get install cmake git libgtk-3-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev # required
+sudo apt-get install libgtk-3-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev # required
 sudo apt-get install python-dev python-numpy libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev # optional
 ```
 
@@ -168,13 +167,13 @@ cd opencv-3.4.1
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
-make -j4
+make -j4  # Number of processors. 4 is fine for the Raspberry
 ```
 
 Go for a walk; this takes ages. If process breaks, you can launch again just retyping:
 
 ```
-make -j3
+make -j4
 ```
 
 When compilation is done, complete the installation:
