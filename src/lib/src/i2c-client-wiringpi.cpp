@@ -33,16 +33,18 @@ int I2cClientWiringPi::initialize() {
 	return 0;
 }
 
-int I2cClientWiringPi::i2cRead(int addr) {
-	if (ioctl(file_i2c, I2C_SLAVE, addr) < 0) {
-		std::cout << "Failed to acquire bus address " << addr << ": " << std::strerror(errno) << '\n';
+int I2cClientWiringPi::i2cRead(int address) {
+	if (ioctl(file_i2c, I2C_SLAVE, address) < 0) {
+		std::cout << "Failed to acquire bus address " << address << ": " << std::strerror(errno) << '\n';
 		return -1;
 	}
 
-	//read() returns the number of bytes actually read, if it doesn't match then an error occurred (e.g. no response from the device)
+	// read() returns the number of bytes actually read, 
+	// if it doesn't match then an error occurred 
+	// (e.g. no response from the device)
 	int length = 1;
 	if (read(file_i2c, buffer, length) != length) {
-		std::cout << "Failed to read bus address " << addr << ": " << std::strerror(errno) << '\n';
+		std::cout << "Failed to read bus address " << address << ": " << std::strerror(errno) << '\n';
 		return -1;
 	}
 	

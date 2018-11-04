@@ -19,7 +19,7 @@ public:
 	virtual ~I2cClientMock() = default;
 
 	/** Returns a random number between 0 and 255.*/
-	virtual int i2cRead(int register) override;
+	virtual int i2cRead(int address) override;
 };
 
 #endif

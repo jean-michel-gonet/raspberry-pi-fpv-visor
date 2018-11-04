@@ -14,6 +14,6 @@ I2cClientMock::I2cClientMock() {
 	// Nothing to do.
 }
 
-int I2cClientMock::i2cRead(int register) {
+int I2cClientMock::i2cRead(int address) {
 	return rand() % 256;
 }

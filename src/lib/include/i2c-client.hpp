@@ -17,7 +17,7 @@ public:
 	/** Simple device read. 
 	 * Some devices present data when you read them without having to 
 	 * do any register transactions.*/
-	 virtual int i2cRead(int register) = 0;
+	 virtual int i2cRead(int address) = 0;
 };
 
 #endif
